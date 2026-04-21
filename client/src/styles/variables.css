@@ -1,0 +1,39 @@
+/* ===========================
+   SevakAI — CSS Variables
+   =========================== */
+:root {
+  /* Brand Colors */
+  --navy: #1a3a6b;
+  --saffron: #FF6600;
+  --india-green: #138808;
+  --blue: #0056A2;
+
+  /* Text */
+  --text: #212121;
+  --mid: #444;
+  --light: #666;
+
+  /* UI */
+  --border: #d0d0d0;
+  --bg: #fff;
+  --bg-faint: #f5f7fa;
+  --thead: #1a3a6b;
+  --table-alt: #EEF3FB;
+
+  /* Status */
+  --ok: #138808;
+  --warn: #e67e22;
+  --danger: #c0392b;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.12);
+
+  /* Border Radius */
+  --radius-sm: 3px;
+  --radius-md: 4px;
+
+  /* Font */
+  --font-main: 'Noto Sans', sans-serif;
+  --font-hindi: 'Noto Sans Devanagari', sans-serif;
+}

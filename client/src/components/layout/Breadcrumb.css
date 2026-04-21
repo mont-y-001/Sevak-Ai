@@ -1,0 +1,22 @@
+/* ── Breadcrumb.css ── */
+.bc {
+  background: var(--bg-faint);
+  border-bottom: 1px solid var(--border);
+  padding: 6px 0;
+  font-size: 11px;
+}
+
+.bc-in {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--light);
+  flex-wrap: wrap;
+}
+
+.bc-in a { color: var(--blue); }
+.bc-in a:hover { text-decoration: underline; }
+

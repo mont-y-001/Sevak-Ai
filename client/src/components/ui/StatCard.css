@@ -1,0 +1,40 @@
+/* ── StatCard.css ── */
+.sbox {
+  padding: 12px 14px;
+  border-right: 1px solid var(--border);
+  background: #fff;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sbox:last-child { border-right: none; }
+
+.sico {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.i1 { background: #EEF3FB; }
+.i2 { background: #FFF3E0; }
+.i3 { background: #E8F5E9; }
+.i4 { background: #F3E5F5; }
+
+.snum {
+  font-size: clamp(16px, 3vw, 22px);
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1;
+}
+
+.slbl {
+  font-size: 10px;
+  color: var(--light);
+  margin-top: 2px;
+}
+

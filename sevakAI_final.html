@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SevakAI — Volunteer Coordination Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/*=== RESET & VARIABLES ===*/
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --navy:#1a3a6b;--saffron:#FF6600;--india-green:#138808;
+  --blue:#0056A2;--text:#212121;--mid:#444;--light:#666;
+  --border:#d0d0d0;--bg:#fff;--bgf:#f5f7fa;
+  --thead:#1a3a6b;--talt:#EEF3FB;
+  --ok:#138808;--warn:#e67e22;--danger:#c0392b;
+}
+html{font-size:14px;scroll-behavior:smooth}
+body{font-family:'Noto Sans',sans-serif;color:var(--text);background:#fff;overflow-x:hidden}
+img{max-width:100%}
+a{color:var(--blue);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/*=== UTILITY BAR ===*/
+.util{background:var(--navy);color:#fff;font-size:11px;padding:5px 0;border-bottom:3px solid var(--saffron)}
+.util-in{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.util-left{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.util-left a{color:#ccd9ee;font-size:11px}
+.util-left a:hover{color:#fff}
+.util-right{display:flex;gap:6px;align-items:center}
+.util-right a{color:#ccd9ee;padding:1px 7px;border:1px solid rgba(255,255,255,0.2);border-radius:2px;font-size:11px}
+.util-right a:hover{background:rgba(255,255,255,0.1);color:#fff;text-decoration:none}
+.hibtn{background:var(--saffron);color:#fff!important;border:none!important;padding:2px 9px;border-radius:2px;cursor:pointer;font-family:'Noto Sans Devanagari',sans-serif;font-size:11px}
+
+/*=== HEADER ===*/
+.hdr{background:#fff;border-bottom:1px solid var(--border);padding:10px 0}
+.hdr-in{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:14px}
+.hdr-logo{width:52px;height:52px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.hdr-text{flex:1;min-width:0}
+.hdr-text h1{font-size:clamp(14px,2.5vw,20px);font-weight:700;color:var(--navy);line-height:1.2;margin-bottom:1px}
+.hdr-text h1 span{color:var(--saffron)}
+.hdr-hi{font-size:11px;color:var(--light);font-family:'Noto Sans Devanagari',sans-serif}
+.hdr-sub{font-size:10px;color:var(--light);margin-top:1px}
+.hdr-badge{flex-shrink:0;text-align:right;border-left:1px solid var(--border);padding-left:14px;font-size:10px;color:var(--light)}
+.hdr-badge .bold{font-size:11px;font-weight:700;color:var(--navy);margin-bottom:2px}
+.proto-tag{background:var(--navy);color:#fff;padding:2px 7px;border-radius:2px;font-size:9px;font-weight:700;display:inline-block;margin-top:4px}
+.tricolor{height:4px;background:linear-gradient(90deg,#FF6600 33.33%,#fff 33.33% 66.66%,#138808 66.66%);border-top:1px solid var(--border)}
+
+/*=== NAV ===*/
+.nav{background:var(--navy);position:sticky;top:0;z-index:200}
+.nav-in{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:stretch;overflow-x:auto;scrollbar-width:none}
+.nav-in::-webkit-scrollbar{display:none}
+.nbtn{background:none;border:none;color:#d0ddf0;font-size:12px;font-weight:500;padding:11px 14px;cursor:pointer;font-family:'Noto Sans',sans-serif;white-space:nowrap;border-right:1px solid rgba(255,255,255,0.1);flex-shrink:0;transition:background .15s,color .15s}
+.nbtn:hover{background:rgba(255,255,255,0.1);color:#fff}
+.nbtn.active{background:var(--saffron);color:#fff}
+.nbtn.right{margin-left:auto;border-left:1px solid rgba(255,255,255,0.1);border-right:none}
+
+/*=== BREADCRUMB ===*/
+.bc{background:var(--bgf);border-bottom:1px solid var(--border);padding:6px 0;font-size:11px}
+.bc-in{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:center;gap:5px;color:var(--light);flex-wrap:wrap}
+
+/*=== NOTICE BAR ===*/
+.notbar{background:#FFF8E1;border-top:3px solid var(--saffron);border-bottom:1px solid #FFE082;padding:7px 0;font-size:11px}
+.notbar-in{max-width:1200px;margin:0 auto;padding:0 16px;display:flex;align-items:flex-start;gap:8px}
+.ntag{background:var(--saffron);color:#fff;padding:2px 7px;font-size:10px;font-weight:700;border-radius:2px;flex-shrink:0;margin-top:1px}
+
+/*=== PAGES ===*/
+.page{display:none}
+.page.active{display:block}
+
+/*=== STATS STRIP ===*/
+.stats-wrap{max-width:1200px;margin:14px auto 0;padding:0 16px}
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--border);border-radius:4px;overflow:hidden}
+.sbox{padding:12px 14px;border-right:1px solid var(--border);background:#fff;display:flex;align-items:center;gap:10px}
+.sbox:last-child{border-right:none}
+.sico{width:36px;height:36px;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.i1{background:#EEF3FB}.i2{background:#FFF3E0}.i3{background:#E8F5E9}.i4{background:#F3E5F5}
+.snum{font-size:clamp(16px,3vw,22px);font-weight:700;color:var(--navy);line-height:1}
+.slbl{font-size:10px;color:var(--light);margin-top:2px}
+
+/*=== LAYOUT ===*/
+.body-wrap{max-width:1200px;margin:0 auto;padding:14px 16px 24px;display:grid;grid-template-columns:1fr 280px;gap:18px}
+
+/*=== CARDS ===*/
+.card{border:1px solid var(--border);border-radius:4px;margin-bottom:18px;overflow:hidden}
+.card-hd{background:var(--navy);color:#fff;font-size:12px;font-weight:600;padding:9px 13px;display:flex;justify-content:space-between;align-items:center;border-left:4px solid var(--saffron)}
+.card-hd a{color:#99b8e0;font-size:11px;font-weight:400}
+.card-hd a:hover{color:#fff}
+
+/*=== TABLE ===*/
+.dtbl{width:100%;border-collapse:collapse;font-size:11px}
+.dtbl thead tr{background:var(--thead);color:#fff}
+.dtbl th{padding:7px 10px;text-align:left;font-weight:600;font-size:10px;letter-spacing:.03em;white-space:nowrap}
+.dtbl td{padding:8px 10px;border-bottom:1px solid #e8e8e8;vertical-align:middle}
+.dtbl tr:nth-child(even) td{background:var(--talt)}
+.dtbl tr:hover td{background:#dceefb}
+.dtbl tr:last-child td{border-bottom:none}
+.pill{display:inline-block;padding:2px 7px;border-radius:2px;font-size:10px;font-weight:600}
+.ph{background:#FFEBEE;color:var(--danger);border:1px solid #ffcdd2}
+.pm{background:#FFF8E1;color:var(--warn);border:1px solid #ffe082}
+.pl{background:#E8F5E9;color:var(--ok);border:1px solid #c8e6c9}
+.tbar-w{display:flex;align-items:center;gap:5px}
+.tbar{width:44px;height:5px;background:#e0e0e0;border-radius:2px;overflow:hidden}
+.tfill{height:100%;background:var(--ok);border-radius:2px}
+.alink{color:var(--blue);font-size:11px}
+.alink:hover{text-decoration:underline}
+
+/*=== CALL SIM ===*/
+.sim-wrap{padding:13px;background:var(--bgf);border-bottom:1px solid var(--border)}
+.sim-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.cdot{width:10px;height:10px;border-radius:50%;background:#bbb;flex-shrink:0;margin-top:4px;transition:background .3s}
+.cdot.on{background:var(--ok);animation:blink 1.2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+.sim-org{font-weight:600;font-size:12px;color:var(--navy)}
+.sim-meta{font-size:10px;color:var(--light)}
+.simbtn{background:var(--navy);color:#fff;border:none;padding:7px 14px;font-size:11px;cursor:pointer;border-radius:3px;font-family:'Noto Sans',sans-serif;font-weight:600;margin-left:auto;white-space:nowrap}
+.simbtn:hover{background:#0f2a52}
+.simbtn:disabled{background:#999;cursor:not-allowed}
+.tbox{background:#fff;border:1px solid var(--border);border-radius:3px;padding:10px;min-height:150px;max-height:200px;overflow-y:auto;font-size:11px;line-height:1.7}
+.tline{display:flex;gap:8px;margin-bottom:7px}
+.tsp{font-weight:700;font-size:10px;white-space:nowrap;min-width:85px;padding-top:1px}
+.tsp.ai{color:var(--navy)}.tsp.ngo{color:var(--ok)}
+.thi{font-family:'Noto Sans Devanagari',sans-serif;font-size:11px;display:block}
+.ten{font-size:10px;color:#888;font-style:italic;display:block}
+.vgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-top:none}
+.vcell{background:#fff;padding:9px 11px;font-size:10px}
+.vlbl{color:var(--light);margin-bottom:2px}
+.vval{font-weight:700;color:var(--navy);font-size:13px}
+.vconf{font-size:9px;color:var(--ok);margin-top:2px}
+.prog-row{display:flex;align-items:center;padding:10px 12px;background:#fff;border-top:1px solid var(--border);overflow-x:auto}
+.prog-row::-webkit-scrollbar{height:3px}
+.ps{flex:1;text-align:center;font-size:10px;color:#aaa;position:relative;min-width:50px}
+.ps::after{content:'';position:absolute;top:12px;left:55%;width:90%;height:2px;background:#e0e0e0}
+.ps:last-child::after{display:none}
+.pn{width:24px;height:24px;border-radius:50%;background:#e0e0e0;color:#999;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;margin:0 auto 4px;position:relative;z-index:1}
+.ps.done .pn{background:var(--ok);color:#fff}
+.ps.done{color:var(--ok)}
+.ps.done::after{background:var(--ok)}
+.ps.cur .pn{background:var(--navy);color:#fff}
+.ps.cur{color:var(--navy);font-weight:600}
+
+/*=== MAP ===*/
+.map-area{position:relative;height:260px;background:#dce8f0;overflow:hidden}
+.map-svg{position:absolute;inset:0;width:100%;height:100%}
+.mpin{position:absolute;transform:translate(-50%,-100%);cursor:pointer}
+.mpin-tri{width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:13px solid var(--navy);margin:0 auto;position:relative}
+.mpin-tri::before{content:'';position:absolute;width:9px;height:9px;border-radius:50%;top:-20px;left:-4.5px;background:var(--navy)}
+.mpin.hi .mpin-tri{border-top-color:var(--danger)}.mpin.hi .mpin-tri::before{background:var(--danger)}
+.mpin.mi .mpin-tri{border-top-color:var(--warn)}.mpin.mi .mpin-tri::before{background:var(--warn)}
+.mpin.lo .mpin-tri{border-top-color:var(--ok)}.mpin.lo .mpin-tri::before{background:var(--ok)}
+.mtip{display:none;position:absolute;bottom:18px;left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);padding:5px 9px;border-radius:3px;font-size:10px;white-space:nowrap;box-shadow:0 2px 6px rgba(0,0,0,.15);z-index:10;pointer-events:none}
+.mpin:hover .mtip{display:block}
+.mtip strong{display:block;color:var(--navy);font-size:11px;margin-bottom:1px}
+.mleg{position:absolute;bottom:10px;right:10px;background:rgba(255,255,255,.95);border:1px solid var(--border);padding:7px 11px;font-size:10px;border-radius:3px}
+.mleg-r{display:flex;align-items:center;gap:6px;margin-bottom:3px}
+.mleg-r:last-child{margin-bottom:0}
+.mleg-d{width:9px;height:9px;border-radius:50%}
+
+/*=== SIDEBAR ===*/
+.scard{border:1px solid var(--border);border-radius:4px;margin-bottom:14px;overflow:hidden}
+.shd{background:var(--navy);color:#fff;font-size:11px;font-weight:600;padding:7px 11px;border-left:3px solid var(--saffron)}
+.sbody{padding:11px;background:#fff}
+.fg{margin-bottom:10px}
+.fg label{display:block;font-size:10px;font-weight:600;color:var(--mid);margin-bottom:3px}
+.fg label .req{color:var(--danger)}
+.fi{width:100%;padding:6px 8px;font-size:11px;border:1px solid var(--border);border-radius:3px;font-family:'Noto Sans',sans-serif;color:var(--text);outline:none}
+.fi:focus{border-color:var(--navy);box-shadow:0 0 0 2px rgba(26,58,107,.1)}
+.fsel{width:100%;padding:6px 8px;font-size:11px;border:1px solid var(--border);border-radius:3px;font-family:'Noto Sans',sans-serif;background:#fff;outline:none}
+.sbtn2{width:100%;background:var(--navy);color:#fff;border:none;padding:8px;font-size:12px;font-weight:600;border-radius:3px;cursor:pointer;font-family:'Noto Sans',sans-serif;margin-top:3px}
+.sbtn2:hover{background:#0f2a52}
+.fnote{font-size:9px;color:var(--light);margin-top:7px;line-height:1.5}
+.qlinks{list-style:none}
+.qlinks li{border-bottom:1px solid #f0f0f0;padding:6px 0;display:flex;gap:5px;align-items:flex-start}
+.qlinks li:last-child{border-bottom:none;padding-bottom:0}
+.qlinks li::before{content:'▸';color:var(--saffron);font-size:9px;padding-top:2px;flex-shrink:0}
+.qlinks a{color:var(--blue);font-size:11px;line-height:1.4}
+.notitem{padding:7px 0;border-bottom:1px dashed #ddd;font-size:10px}
+.notitem:last-child{border-bottom:none;padding-bottom:0}
+.ndate{color:var(--saffron);font-weight:600;margin-bottom:2px}
+.ntxt{color:var(--mid);line-height:1.5}
+.nbadge{background:var(--danger);color:#fff;font-size:8px;padding:0 4px;border-radius:2px;font-weight:700;margin-left:3px;vertical-align:middle}
+
+/*=== VOLUNTEER PAGE ===*/
+.vol-hero{background:linear-gradient(135deg,#1a3a6b 0%,#0f2345 100%);color:#fff;padding:32px 24px;text-align:center;border-bottom:4px solid var(--saffron)}
+.vol-hero h2{font-size:clamp(18px,3vw,26px);font-weight:700;margin-bottom:8px}
+.vol-hero p{font-size:13px;opacity:.85;max-width:560px;margin:0 auto 20px}
+.vol-hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.vbtn-p{background:var(--saffron);color:#fff;border:none;padding:10px 24px;border-radius:3px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Noto Sans',sans-serif}
+.vbtn-s{background:transparent;color:#fff;border:1px solid rgba(255,255,255,.4);padding:10px 24px;border-radius:3px;font-size:13px;cursor:pointer;font-family:'Noto Sans',sans-serif}
+.vol-how{max-width:1200px;margin:0 auto;padding:24px 16px}
+.vol-how h3{font-size:15px;font-weight:700;color:var(--navy);margin-bottom:4px;border-left:4px solid var(--saffron);padding-left:10px}
+.vol-how p.sub{font-size:11px;color:var(--light);margin-bottom:18px;padding-left:14px}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px;margin-bottom:28px}
+.step-card{border:1px solid var(--border);border-radius:4px;padding:16px;background:#fff;position:relative}
+.step-card .snum2{width:28px;height:28px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;margin-bottom:10px}
+.step-card h4{font-size:12px;font-weight:700;color:var(--navy);margin-bottom:5px}
+.step-card p{font-size:11px;color:var(--mid);line-height:1.6}
+.vol-tasks-wrap{max-width:1200px;margin:0 auto;padding:0 16px 24px}
+.vol-task-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px}
+.vol-task-hd h3{font-size:14px;font-weight:700;color:var(--navy);border-left:4px solid var(--saffron);padding-left:10px}
+.filter-row{display:flex;gap:8px;flex-wrap:wrap}
+.fbtn{background:#fff;border:1px solid var(--border);padding:5px 12px;border-radius:3px;font-size:11px;cursor:pointer;font-family:'Noto Sans',sans-serif;color:var(--mid)}
+.fbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.task-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-bottom:24px}
+.tcard{border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#fff;transition:box-shadow .2s}
+.tcard:hover{box-shadow:0 2px 8px rgba(0,0,0,.1)}
+.tcard-top{padding:12px 14px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.tcard-org{font-weight:700;font-size:12px;color:var(--navy);margin-bottom:3px}
+.tcard-meta{font-size:10px;color:var(--light)}
+.tcard-body{padding:12px 14px}
+.tcard-detail{font-size:11px;color:var(--mid);margin-bottom:6px;display:flex;align-items:flex-start;gap:6px}
+.tcard-detail span:first-child{flex-shrink:0}
+.tcard-footer{padding:10px 14px;background:var(--bgf);border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center}
+.accept-btn{background:var(--ok);color:#fff;border:none;padding:6px 16px;border-radius:3px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Noto Sans',sans-serif}
+.accept-btn:hover{background:#0f6b06}
+.decline-btn{background:#fff;color:var(--danger);border:1px solid var(--danger);padding:6px 14px;border-radius:3px;font-size:11px;cursor:pointer;font-family:'Noto Sans',sans-serif}
+.whatsapp-note{background:#E8F5E9;border:1px solid #c8e6c9;border-radius:4px;padding:14px;margin-bottom:20px;font-size:11px;display:flex;gap:10px;align-items:flex-start}
+.wa-ico{font-size:22px;flex-shrink:0}
+.wa-text strong{display:block;color:var(--ok);font-size:12px;margin-bottom:4px}
+.wa-text p{color:var(--mid);line-height:1.6}
+
+/*=== TEAM PAGE ===*/
+.team-page{max-width:1200px;margin:0 auto;padding:24px 16px}
+.team-banner{background:var(--navy);color:#fff;border-radius:4px;padding:28px;text-align:center;margin-bottom:24px;border-top:4px solid var(--saffron)}
+.team-banner h2{font-size:clamp(20px,3vw,28px);font-weight:700;margin-bottom:6px}
+.team-banner h2 span{color:var(--saffron)}
+.team-banner p{font-size:12px;opacity:.8;margin-bottom:4px}
+.team-banner .challenge{font-size:11px;opacity:.6}
+.members-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px;margin-bottom:24px}
+.member-card{border:1px solid var(--border);border-radius:4px;overflow:hidden;background:#fff;text-align:center}
+.member-avatar{background:var(--navy);padding:20px;font-size:36px}
+.member-info{padding:14px}
+.member-name{font-weight:700;font-size:13px;color:var(--navy);margin-bottom:4px}
+.member-role{font-size:10px;color:var(--light);background:var(--bgf);border:1px solid var(--border);padding:2px 8px;border-radius:2px;display:inline-block;margin-bottom:8px}
+.member-detail{font-size:10px;color:var(--mid);line-height:1.6}
+.about-project{border:1px solid var(--border);border-radius:4px;padding:20px;background:#fff;margin-bottom:18px}
+.about-project h3{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;border-left:4px solid var(--saffron);padding-left:10px}
+.tech-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.tech-item{border:1px solid var(--border);border-radius:3px;padding:10px;background:var(--bgf);font-size:11px}
+.tech-item .tname{font-weight:600;color:var(--navy);margin-bottom:2px}
+.tech-item .trole{color:var(--light);font-size:10px}
+
+/*=== IMPACT PAGE ===*/
+.impact-page{max-width:1200px;margin:0 auto;padding:24px 16px}
+.impact-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:24px}
+.icard{border:1px solid var(--border);border-radius:4px;padding:20px;background:#fff;text-align:center}
+.icard .inum{font-size:32px;font-weight:700;color:var(--navy);line-height:1}
+.icard .ilbl{font-size:11px;color:var(--light);margin-top:4px}
+.icard .iico{font-size:28px;margin-bottom:8px}
+.phase-tbl{width:100%;border-collapse:collapse;font-size:12px;margin-top:14px}
+.phase-tbl th{background:var(--navy);color:#fff;padding:8px 12px;text-align:left;font-size:11px}
+.phase-tbl td{padding:9px 12px;border-bottom:1px solid #e8e8e8}
+.phase-tbl tr:nth-child(even) td{background:var(--talt)}
+
+/*=== FOOTER ===*/
+.footer{background:var(--navy);color:#c0cde0;border-top:3px solid var(--saffron);margin-top:20px;padding:20px 0 0}
+.foot-in{max-width:1200px;margin:0 auto;padding:0 16px 16px;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:20px}
+.foot-in h4{color:#fff;font-size:11px;margin-bottom:7px}
+.foot-in p{font-size:10px;line-height:1.7}
+.foot-in ul{list-style:none}
+.foot-in ul li{margin-bottom:4px}
+.foot-in ul li a{color:#a0b4cc;font-size:10px}
+.foot-in ul li a:hover{color:#fff}
+.foot-team{background:#0f2345;padding:10px 16px;font-size:10px;color:#7a8fa6;text-align:center;border-top:1px solid rgba(255,255,255,.08)}
+.foot-btm{background:#0f2345;padding:9px 16px;font-size:10px;color:#7a8fa6;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;border-top:1px solid rgba(255,255,255,.08)}
+
+/*=== MODAL ===*/
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:999;align-items:center;justify-content:center;padding:16px}
+.modal-bg.open{display:flex}
+.mbox{background:#fff;max-width:440px;width:100%;border-top:4px solid var(--saffron);border-radius:4px;overflow:hidden;max-height:90vh;overflow-y:auto}
+.mhd{background:var(--navy);color:#fff;padding:11px 14px;font-size:13px;font-weight:700;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0}
+.mhd button{background:none;border:none;color:#fff;font-size:18px;cursor:pointer}
+.mbd{padding:18px}
+.sucmsg{display:none;background:#E8F5E9;border:1px solid #c8e6c9;padding:20px;border-radius:3px;text-align:center}
+.sucmsg .tick{font-size:32px;margin-bottom:6px}
+.sucmsg strong{font-size:13px;color:var(--ok);display:block}
+.sucmsg p{font-size:11px;color:#555;margin-top:6px}
+
+/*=== RESPONSIVE BREAKPOINTS ===*/
+@media(max-width:1024px){
+  .body-wrap{grid-template-columns:1fr}
+  .foot-in{grid-template-columns:1fr 1fr}
+}
+@media(max-width:768px){
+  .stats-row{grid-template-columns:1fr 1fr}
+  .hdr-badge{display:none}
+  .vgrid{grid-template-columns:1fr 1fr}
+  .util-right{display:none}
+}
+@media(max-width:480px){
+  .stats-row{grid-template-columns:1fr}
+  .util{display:none}
+  .hdr-in{gap:10px}
+  .hdr-logo{width:44px;height:44px;font-size:18px}
+  .nbtn{padding:10px 10px;font-size:11px}
+  .vgrid{grid-template-columns:1fr 1fr}
+  .foot-in{grid-template-columns:1fr}
+  .tcard-top{flex-direction:column;gap:6px}
+  .dtbl{font-size:10px}
+  .dtbl th,.dtbl td{padding:6px 7px}
+}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="util">
+  <div class="util-in">
+    <div class="util-left">
+      <span>🇮🇳 India Social Sector Initiative</span>
+      <a href="#">Skip to Main Content</a>
+      <a href="#">Screen Reader</a>
+    </div>
+    <div class="util-right">
+      <button class="hibtn" onclick="alert('हिंदी संस्करण शीघ्र आ रहा है')">हिंदी</button>
+      <a href="#">A-</a><a href="#" style="font-weight:700">A</a><a href="#">A+</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr">
+  <div class="hdr-in">
+    <div class="hdr-logo">🤝</div>
+    <div class="hdr-text">
+      <h1>Sevak<span>AI</span> — Volunteer Coordination Portal</h1>
+      <div class="hdr-hi">सेवकAI — स्वयंसेवक समन्वय पोर्टल</div>
+      <div class="hdr-sub">AI-Powered NGO Coordination | Ministry of Social Justice &amp; Empowerment | Government of India</div>
+    </div>
+    <div class="hdr-badge">
+      <div class="bold">Google Solution Challenge 2026</div>
+      <div>Problem Statement #5</div>
+      <div>Smart Resource Allocation</div>
+      <span class="proto-tag">PROTOTYPE DEMO</span>
+    </div>
+  </div>
+  <div class="tricolor"></div>
+</header>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-in">
+    <button class="nbtn active" onclick="showPage('home',this)">🏠 Home</button>
+    <button class="nbtn" onclick="showPage('needs',this)">📋 Active Needs</button>
+    <button class="nbtn" onclick="showPage('sim',this)">📞 AI Call Demo</button>
+    <button class="nbtn" onclick="showPage('volunteer',this)">🙋 Volunteer Portal</button>
+    <button class="nbtn" onclick="showPage('impact',this)">📊 Impact Report</button>
+    <button class="nbtn" onclick="showPage('team',this)">👥 Our Team</button>
+    <button class="nbtn" onclick="openMod()">✏️ Register NGO</button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="bc"><div class="bc-in"><a href="#">Home</a><span style="color:#aaa">›</span><a href="#">SevakAI Portal</a><span style="color:#aaa">›</span><span id="bctext">Dashboard</span></div></div>
+
+<!-- NOTICE BAR -->
+<div class="notbar">
+  <div class="notbar-in">
+    <span class="ntag">NOTICE</span>
+    <span style="color:#555;font-size:11px"><b style="color:var(--saffron)">3 High-Urgency Needs</b> require immediate dispatch in Mumbai, Kolkata &amp; Delhi NCR. &nbsp;|&nbsp; AI calls scheduled: <b>Mon 14 Apr 2026, 10:00–12:00 IST</b>. &nbsp;|&nbsp; NGO registration window open.</span>
+  </div>
+</div>
+
+<!-- ══════════ HOME PAGE ══════════ -->
+<div class="page active" id="page-home">
+  <div class="stats-wrap">
+    <div class="stats-row" style="margin-top:14px">
+      <div class="sbox"><div class="sico i1">🏢</div><div><div class="snum" id="c1">0</div><div class="slbl">Active NGOs Registered</div></div></div>
+      <div class="sbox"><div class="sico i2">📋</div><div><div class="snum" id="c2">0</div><div class="slbl">Open Volunteer Needs</div></div></div>
+      <div class="sbox"><div class="sico i3">✅</div><div><div class="snum" id="c3">0</div><div class="slbl">Volunteers Dispatched</div></div></div>
+      <div class="sbox"><div class="sico i4">⏱️</div><div><div class="snum" id="c4">0</div><div class="slbl">Service Hours Logged</div></div></div>
+    </div>
+  </div>
+
+  <div class="body-wrap">
+    <main>
+      <!-- CALL SIM CARD -->
+      <div class="card">
+        <div class="card-hd">📞 AI Weekly Call Simulation — Live Demo <a href="#">View all call logs →</a></div>
+        <div class="sim-wrap">
+          <div class="sim-top">
+            <div class="cdot" id="cdot"></div>
+            <div>
+              <div class="sim-org">Aasha Foundation, Delhi NCR</div>
+              <div class="sim-meta">Darpan ID: DL/2019/0234567 &nbsp;|&nbsp; Hindi &nbsp;|&nbsp; Food Distribution</div>
+            </div>
+            <button class="simbtn" id="simbtn" onclick="runSim()">▶ Start Simulation</button>
+          </div>
+          <div class="tbox" id="tbox"><div style="color:#bbb;text-align:center;padding:40px 0;font-size:11px">Press "Start Simulation" to watch a live AI call transcript in Hindi</div></div>
+          <div class="vgrid" id="vgrid" style="display:none">
+            <div class="vcell"><div class="vlbl">Volunteers Requested</div><div class="vval" id="vv1">—</div><div class="vconf" id="vc1"></div></div>
+            <div class="vcell"><div class="vlbl">Area / Pincode</div><div class="vval" id="vv2">—</div><div class="vconf" id="vc2"></div></div>
+            <div class="vcell"><div class="vlbl">Task Type</div><div class="vval" id="vv3">—</div><div class="vconf" id="vc3"></div></div>
+            <div class="vcell"><div class="vlbl">Urgency Level</div><div class="vval" id="vv4">—</div><div class="vconf" id="vc4"></div></div>
+          </div>
+          <div class="prog-row">
+            <div class="ps" id="p1"><div class="pn">1</div>PIN Verify</div>
+            <div class="ps" id="p2"><div class="pn">2</div>Volunteers</div>
+            <div class="ps" id="p3"><div class="pn">3</div>Pincode</div>
+            <div class="ps" id="p4"><div class="pn">4</div>Task Type</div>
+            <div class="ps" id="p5"><div class="pn">5</div>Urgency</div>
+            <div class="ps" id="p6"><div class="pn">6</div>Dispatch</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- NEEDS TABLE -->
+      <div class="card">
+        <div class="card-hd">📋 Active Volunteer Needs — This Week <a href="#">Download CSV ↓</a></div>
+        <div style="overflow-x:auto">
+        <table class="dtbl">
+          <thead><tr><th>Ref No.</th><th>Organisation</th><th>City</th><th>Task</th><th>Vol.</th><th>Urgency</th><th>Trust</th><th>Status</th><th>Action</th></tr></thead>
+          <tbody>
+            <tr><td style="font-size:10px;color:var(--light)">NE-2026-0412</td><td><b>Sneha Trust</b><br><span style="font-size:9px;color:#888">MH/2018/0119823</span></td><td>Mumbai<br><span style="font-size:9px">400001</span></td><td>Healthcare Camp</td><td style="font-weight:700;color:var(--navy)">75</td><td><span class="pill ph">Urgency 5</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:92%"></div></div><span style="font-size:10px;color:var(--light)">92</span></div></td><td><span style="color:var(--ok);font-size:10px;font-weight:600">● Dispatching</span></td><td><a href="#" class="alink">View</a></td></tr>
+            <tr><td style="font-size:10px;color:var(--light)">NE-2026-0411</td><td><b>Mamata NGO</b><br><span style="font-size:9px;color:#888">WB/2015/0087341</span></td><td>Kolkata<br><span style="font-size:9px">700001</span></td><td>Medical Aid</td><td style="font-weight:700;color:var(--navy)">50</td><td><span class="pill ph">Urgency 4</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:85%"></div></div><span style="font-size:10px;color:var(--light)">85</span></div></td><td><span style="color:var(--warn);font-size:10px;font-weight:600">● Matching</span></td><td><a href="#" class="alink">View</a></td></tr>
+            <tr><td style="font-size:10px;color:var(--light)">NE-2026-0410</td><td><b>Udaan Society</b><br><span style="font-size:9px;color:#888">RJ/2017/0056218</span></td><td>Jaipur<br><span style="font-size:9px">302001</span></td><td>Education Drive</td><td style="font-weight:700;color:var(--navy)">25</td><td><span class="pill pm">Urgency 3</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:78%"></div></div><span style="font-size:10px;color:var(--light)">78</span></div></td><td><span style="color:var(--blue);font-size:10px;font-weight:600">● Open</span></td><td><a href="#" class="alink">View</a></td></tr>
+            <tr><td style="font-size:10px;color:var(--light)">NE-2026-0409</td><td><b>Vidya Kiran</b><br><span style="font-size:9px;color:#888">TS/2016/0098423</span></td><td>Hyderabad<br><span style="font-size:9px">500001</span></td><td>Teaching Support</td><td style="font-weight:700;color:var(--navy)">30</td><td><span class="pill pm">Urgency 3</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:91%"></div></div><span style="font-size:10px;color:var(--light)">91</span></div></td><td><span style="color:var(--blue);font-size:10px;font-weight:600">● Open</span></td><td><a href="#" class="alink">View</a></td></tr>
+            <tr><td style="font-size:10px;color:var(--light)">NE-2026-0408</td><td><b>Aasha Foundation</b><br><span style="font-size:9px;color:#888">DL/2019/0234567</span></td><td>Delhi<br><span style="font-size:9px">110001</span></td><td>Food Distribution</td><td style="font-weight:700;color:var(--navy)">20</td><td><span class="pill pl">Urgency 2</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:96%"></div></div><span style="font-size:10px;color:var(--light)">96</span></div></td><td><span style="color:var(--ok);font-size:10px;font-weight:600">● Confirmed</span></td><td><a href="#" class="alink">View</a></td></tr>
+          </tbody>
+        </table>
+        </div>
+      </div>
+
+      <!-- MAP -->
+      <div class="card">
+        <div class="card-hd">🗺️ Geographic Distribution of Active Needs <a href="#">View full map →</a></div>
+        <div class="map-area">
+          <svg class="map-svg" viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
+            <rect width="500" height="560" fill="#dce8f0"/>
+            <path fill="#c5d8e8" stroke="#a0b8cc" stroke-width="1.2" d="M248,36 C228,39 202,53 183,73 C163,95 146,123 136,153 C125,184 121,215 126,245 C131,275 139,295 149,317 C161,341 169,359 177,385 C185,411 189,439 193,461 C197,481 203,498 213,513 C223,527 238,537 251,541 C264,537 279,527 289,513 C299,498 305,481 309,461 C313,439 317,411 325,385 C333,359 341,341 353,317 C363,295 371,275 376,245 C381,215 377,184 366,153 C356,123 339,95 319,73 C300,53 276,39 256,36 Z"/>
+            <text x="251" y="168" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Delhi</text>
+            <text x="195" y="360" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Mumbai</text>
+            <text x="308" y="280" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Kolkata</text>
+            <text x="300" y="400" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Hyderabad</text>
+            <text x="244" y="448" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Bengaluru</text>
+            <text x="192" y="254" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Jaipur</text>
+          </svg>
+          <div class="mpin hi" style="left:50%;top:29%"><div class="mtip"><strong>Sneha Trust — Mumbai</strong>75 volunteers · Healthcare · Urgency 5</div><div class="mpin-tri"></div></div>
+          <div class="mpin hi" style="left:62%;top:48%"><div class="mtip"><strong>Mamata NGO — Kolkata</strong>50 volunteers · Medical · Urgency 4</div><div class="mpin-tri"></div></div>
+          <div class="mpin mi" style="left:38%;top:43%"><div class="mtip"><strong>Udaan Society — Jaipur</strong>25 volunteers · Education · Urgency 3</div><div class="mpin-tri"></div></div>
+          <div class="mpin mi" style="left:60%;top:69%"><div class="mtip"><strong>Vidya Kiran — Hyderabad</strong>30 volunteers · Teaching · Urgency 3</div><div class="mpin-tri"></div></div>
+          <div class="mpin lo" style="left:49%;top:26%"><div class="mtip"><strong>Aasha Foundation — Delhi</strong>20 volunteers · Food · Urgency 2</div><div class="mpin-tri"></div></div>
+          <div class="mpin lo" style="left:48%;top:78%"><div class="mtip"><strong>Green Hearts — Bengaluru</strong>15 volunteers · Food · Urgency 1</div><div class="mpin-tri"></div></div>
+          <div class="mleg">
+            <div class="mleg-r"><div class="mleg-d" style="background:var(--danger)"></div><span>High (4–5)</span></div>
+            <div class="mleg-r"><div class="mleg-d" style="background:var(--warn)"></div><span>Medium (3)</span></div>
+            <div class="mleg-r"><div class="mleg-d" style="background:var(--ok)"></div><span>Low (1–2)</span></div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- SIDEBAR -->
+    <aside>
+      <div class="scard">
+        <div class="shd">✏️ Quick NGO Registration</div>
+        <div class="sbody">
+          <div class="fg"><label>Organisation Name <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. Aasha Foundation" id="fn"></div>
+          <div class="fg"><label>Darpan NGO ID <span class="req">*</span></label><input type="text" class="fi" placeholder="DL/2019/0234567" id="fd"></div>
+          <div class="fg"><label>Coordinator Mobile <span class="req">*</span></label><input type="tel" class="fi" placeholder="+91 XXXXX XXXXX" id="fp"></div>
+          <div class="fg"><label>Preferred Language</label><select class="fsel"><option>Hindi</option><option>Bengali</option><option>Tamil</option><option>Telugu</option><option>Marathi</option><option>English</option></select></div>
+          <div class="fg"><label>Primary Domain</label><select class="fsel"><option>Food Distribution</option><option>Healthcare</option><option>Education</option><option>Disaster Relief</option></select></div>
+          <button class="sbtn2" onclick="submitSide()">Submit for Admin Approval</button>
+          <div class="fnote">* Mandatory. Darpan ID verified via NITI Aayog NGO-DARPAN. Approval within 24 hrs. No fee.</div>
+        </div>
+      </div>
+
+      <div class="scard">
+        <div class="shd">🔗 Quick Links</div>
+        <div class="sbody">
+          <ul class="qlinks">
+            <li><a href="#" onclick="showPage('volunteer',document.querySelector('.nbtn:nth-child(4))'))">Volunteer Registration Form</a></li>
+            <li><a href="#">NGO Onboarding Guide (PDF)</a></li>
+            <li><a href="#">How SevakAI Calls Work</a></li>
+            <li><a href="#">Darpan ID Verification Status</a></li>
+            <li><a href="#">Trust Score Policy</a></li>
+            <li><a href="#">Grievance Redressal Portal</a></li>
+            <li><a href="#">Impact Report Q1 2026</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="scard">
+        <div class="shd">📢 Notice Board</div>
+        <div class="sbody">
+          <div class="notitem"><div class="ndate">14 Apr 2026 <span class="nbadge">NEW</span></div><div class="ntxt">Weekly AI call batch scheduled. 47 NGOs contacted 10:00–12:00 IST.</div></div>
+          <div class="notitem"><div class="ndate">10 Apr 2026</div><div class="ntxt">Telugu language support added for Andhra Pradesh &amp; Telangana NGOs.</div></div>
+          <div class="notitem"><div class="ndate">07 Apr 2026</div><div class="ntxt">Trust score recalibration Q1 2026 complete. 3 NGOs suspended pending review.</div></div>
+          <div class="notitem"><div class="ndate">01 Apr 2026</div><div class="ntxt">Pilot Phase 1 complete — 1,840 volunteer dispatches logged.</div></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+</div>
+
+<!-- ══════════ VOLUNTEER PORTAL PAGE ══════════ -->
+<div class="page" id="page-volunteer">
+  <div class="vol-hero">
+    <h2>🙋 Volunteer Portal</h2>
+    <p>Browse open volunteer opportunities near you, register your skills, and accept tasks — all in one place. Get notified via WhatsApp when NGOs need you.</p>
+    <div class="vol-hero-btns">
+      <button class="vbtn-p" onclick="openMod()">Register as Volunteer</button>
+      <button class="vbtn-s" onclick="document.getElementById('open-tasks').scrollIntoView({behavior:'smooth'})">Browse Open Tasks ↓</button>
+    </div>
+  </div>
+
+  <div class="vol-how">
+    <h3>How Volunteers Get Notified</h3>
+    <p class="sub">You never have to check the portal daily — SevakAI comes to you.</p>
+
+    <div class="whatsapp-note">
+      <div class="wa-ico">💬</div>
+      <div class="wa-text">
+        <strong>WhatsApp Notification System</strong>
+        <p>When an NGO submits a need and your skills + pincode match, SevakAI sends you a WhatsApp message instantly. You reply <b>YES</b> to accept or <b>NO</b> to decline — no app needed. If you decline, the next matched volunteer is automatically notified.</p>
+      </div>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-card"><div class="snum2">1</div><h4>Register Once</h4><p>Sign up with your mobile number, skills (food/health/education), home pincode, and availability. OTP verified.</p></div>
+      <div class="step-card"><div class="snum2">2</div><h4>AI Matches You</h4><p>Gemini AI ranks you based on skill match, pincode proximity, and availability every time an NGO submits a need.</p></div>
+      <div class="step-card"><div class="snum2">3</div><h4>Get WhatsApp Alert</h4><p>You receive a WhatsApp message with task details — org name, location, date, what's needed. No app install required.</p></div>
+      <div class="step-card"><div class="snum2">4</div><h4>Accept in One Tap</h4><p>Reply YES to confirm. Reply NO to pass — the next volunteer is auto-notified. Urgency-5 tasks alert multiple volunteers at once.</p></div>
+      <div class="step-card"><div class="snum2">5</div><h4>Complete &amp; Log</h4><p>After the task, submit a 2-tap SMS feedback. Your hours and impact are logged to your volunteer profile automatically.</p></div>
+      <div class="step-card"><div class="snum2">6</div><h4>Earn Certificate</h4><p>Accumulate hours to earn a verified digital certificate — usable for college applications and corporate CSR records.</p></div>
+    </div>
+  </div>
+
+  <div class="vol-tasks-wrap" id="open-tasks">
+    <div class="vol-task-hd">
+      <h3>Open Volunteer Tasks This Week</h3>
+      <div class="filter-row">
+        <button class="fbtn on" onclick="filterTasks(this,'all')">All</button>
+        <button class="fbtn" onclick="filterTasks(this,'food')">🍱 Food</button>
+        <button class="fbtn" onclick="filterTasks(this,'health')">🏥 Health</button>
+        <button class="fbtn" onclick="filterTasks(this,'edu')">📚 Education</button>
+      </div>
+    </div>
+
+    <div class="task-cards">
+      <div class="tcard" data-cat="health">
+        <div class="tcard-top"><div><div class="tcard-org">Sneha Trust</div><div class="tcard-meta">Mumbai, Maharashtra</div></div><span class="pill ph">Urgency 5</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>🏥</span><span>Healthcare Camp — assist doctors, patient registration, first aid support</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Dharavi, Mumbai 400001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>15 April 2026, 8:00 AM – 5:00 PM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>75 volunteers needed · <b style="color:var(--danger)">42 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 92/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Sneha Trust Healthcare Camp')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+
+      <div class="tcard" data-cat="health">
+        <div class="tcard-top"><div><div class="tcard-org">Mamata NGO</div><div class="tcard-meta">Kolkata, West Bengal</div></div><span class="pill ph">Urgency 4</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>💊</span><span>Medical Aid Camp — medicine distribution, patient guidance</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Salt Lake, Kolkata 700001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>16 April 2026, 9:00 AM – 3:00 PM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>50 volunteers needed · <b style="color:var(--warn)">28 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 85/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Mamata NGO Medical Aid')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+
+      <div class="tcard" data-cat="edu">
+        <div class="tcard-top"><div><div class="tcard-org">Udaan Society</div><div class="tcard-meta">Jaipur, Rajasthan</div></div><span class="pill pm">Urgency 3</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>📚</span><span>Education Drive — teach basic literacy to underprivileged children</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Old City, Jaipur 302001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>19 April 2026, 10:00 AM – 2:00 PM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>25 volunteers needed · <b style="color:var(--ok)">18 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 78/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Udaan Society Education Drive')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+
+      <div class="tcard" data-cat="edu">
+        <div class="tcard-top"><div><div class="tcard-org">Vidya Kiran</div><div class="tcard-meta">Hyderabad, Telangana</div></div><span class="pill pm">Urgency 3</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>🏫</span><span>Teaching Support — assist teachers in government school classrooms</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Secunderabad, Hyderabad 500001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>23 April 2026, 9:00 AM – 1:00 PM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>30 volunteers needed · <b style="color:var(--ok)">22 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 91/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Vidya Kiran Teaching Support')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+
+      <div class="tcard" data-cat="food">
+        <div class="tcard-top"><div><div class="tcard-org">Aasha Foundation</div><div class="tcard-meta">Delhi NCR</div></div><span class="pill pl">Urgency 2</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>🍱</span><span>Food Distribution — pack and distribute meals to daily wage workers</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Connaught Place, Delhi 110001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>25 April 2026, 7:00 AM – 11:00 AM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>20 volunteers needed · <b style="color:var(--ok)">14 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 96/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Aasha Foundation Food Distribution')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+
+      <div class="tcard" data-cat="food">
+        <div class="tcard-top"><div><div class="tcard-org">Green Hearts</div><div class="tcard-meta">Bengaluru, Karnataka</div></div><span class="pill pl">Urgency 1</span></div>
+        <div class="tcard-body">
+          <div class="tcard-detail"><span>🌿</span><span>Community Kitchen — help prepare and serve meals at community centre</span></div>
+          <div class="tcard-detail"><span>📍</span><span>Indiranagar, Bengaluru 560001</span></div>
+          <div class="tcard-detail"><span>📅</span><span>26 April 2026, 8:00 AM – 12:00 PM</span></div>
+          <div class="tcard-detail"><span>👥</span><span>15 volunteers needed · <b style="color:var(--ok)">11 spots left</b></span></div>
+          <div class="tcard-detail"><span>⭐</span><span>Trust Score: 88/100 — Verified NGO</span></div>
+        </div>
+        <div class="tcard-footer">
+          <button class="accept-btn" onclick="acceptTask(this,'Green Hearts Community Kitchen')">✓ Accept Task</button>
+          <button class="decline-btn" onclick="declineTask(this)">✕ Decline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ NEEDS PAGE ══════════ -->
+<div class="page" id="page-needs">
+  <div class="stats-wrap">
+    <div class="stats-row" style="margin-top:14px">
+      <div class="sbox"><div class="sico i1">🏢</div><div><div class="snum">47</div><div class="slbl">Active NGOs</div></div></div>
+      <div class="sbox"><div class="sico i2">📋</div><div><div class="snum">312</div><div class="slbl">Open Needs</div></div></div>
+      <div class="sbox"><div class="sico i3">⚡</div><div><div class="snum">3</div><div class="slbl">Urgent (4–5)</div></div></div>
+      <div class="sbox"><div class="sico i4">🕐</div><div><div class="snum">94%</div><div class="slbl">Match Rate</div></div></div>
+    </div>
+  </div>
+  <div style="max-width:1200px;margin:0 auto;padding:14px 16px">
+    <div class="card">
+      <div class="card-hd">📋 All Active Volunteer Needs <a href="#">Download CSV ↓</a></div>
+      <div style="overflow-x:auto">
+      <table class="dtbl">
+        <thead><tr><th>Ref No.</th><th>Organisation</th><th>Darpan ID</th><th>City / Pincode</th><th>Task</th><th>Volunteers</th><th>Urgency</th><th>Trust</th><th>Status</th><th>Action</th></tr></thead>
+        <tbody>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0412</td><td><b>Sneha Trust</b></td><td style="font-size:10px">MH/2018/0119823</td><td>Mumbai 400001</td><td>Healthcare Camp</td><td style="font-weight:700;color:var(--navy)">75</td><td><span class="pill ph">5</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:92%"></div></div>92</div></td><td><span style="color:var(--ok);font-size:10px">● Dispatching</span></td><td><a href="#" class="alink">View</a></td></tr>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0411</td><td><b>Mamata NGO</b></td><td style="font-size:10px">WB/2015/0087341</td><td>Kolkata 700001</td><td>Medical Aid</td><td style="font-weight:700;color:var(--navy)">50</td><td><span class="pill ph">4</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:85%"></div></div>85</div></td><td><span style="color:var(--warn);font-size:10px">● Matching</span></td><td><a href="#" class="alink">View</a></td></tr>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0410</td><td><b>Udaan Society</b></td><td style="font-size:10px">RJ/2017/0056218</td><td>Jaipur 302001</td><td>Education Drive</td><td style="font-weight:700;color:var(--navy)">25</td><td><span class="pill pm">3</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:78%"></div></div>78</div></td><td><span style="color:var(--blue);font-size:10px">● Open</span></td><td><a href="#" class="alink">View</a></td></tr>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0409</td><td><b>Vidya Kiran</b></td><td style="font-size:10px">TS/2016/0098423</td><td>Hyderabad 500001</td><td>Teaching Support</td><td style="font-weight:700;color:var(--navy)">30</td><td><span class="pill pm">3</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:91%"></div></div>91</div></td><td><span style="color:var(--blue);font-size:10px">● Open</span></td><td><a href="#" class="alink">View</a></td></tr>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0408</td><td><b>Aasha Foundation</b></td><td style="font-size:10px">DL/2019/0234567</td><td>Delhi 110001</td><td>Food Distribution</td><td style="font-weight:700;color:var(--navy)">20</td><td><span class="pill pl">2</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:96%"></div></div>96</div></td><td><span style="color:var(--ok);font-size:10px">● Confirmed</span></td><td><a href="#" class="alink">View</a></td></tr>
+          <tr><td style="font-size:10px;color:var(--light)">NE-2026-0407</td><td><b>Green Hearts</b></td><td style="font-size:10px">KA/2020/0041122</td><td>Bengaluru 560001</td><td>Community Kitchen</td><td style="font-weight:700;color:var(--navy)">15</td><td><span class="pill pl">1</span></td><td><div class="tbar-w"><div class="tbar"><div class="tfill" style="width:88%"></div></div>88</div></td><td><span style="color:var(--ok);font-size:10px">● Confirmed</span></td><td><a href="#" class="alink">View</a></td></tr>
+        </tbody>
+      </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ SIM PAGE ══════════ -->
+<div class="page" id="page-sim">
+  <div style="max-width:1200px;margin:0 auto;padding:14px 16px">
+    <div class="card">
+      <div class="card-hd">📞 AI Weekly Call Simulation — Full Demo</div>
+      <div class="sim-wrap">
+        <div class="sim-top">
+          <div class="cdot" id="cdot2"></div>
+          <div><div class="sim-org">Aasha Foundation, Delhi NCR</div><div class="sim-meta">Darpan ID: DL/2019/0234567 | Hindi | Food Distribution</div></div>
+          <button class="simbtn" id="simbtn2" onclick="runSim2()">▶ Start Simulation</button>
+        </div>
+        <div class="tbox" id="tbox2" style="min-height:280px;max-height:340px"><div style="color:#bbb;text-align:center;padding:80px 0;font-size:11px">Press "Start Simulation" to watch the full AI call in Hindi with English translation</div></div>
+        <div class="vgrid" id="vgrid2" style="display:none">
+          <div class="vcell"><div class="vlbl">Volunteers Requested</div><div class="vval" id="vv1b">—</div><div class="vconf" id="vc1b"></div></div>
+          <div class="vcell"><div class="vlbl">Area / Pincode</div><div class="vval" id="vv2b">—</div><div class="vconf" id="vc2b"></div></div>
+          <div class="vcell"><div class="vlbl">Task Type</div><div class="vval" id="vv3b">—</div><div class="vconf" id="vc3b"></div></div>
+          <div class="vcell"><div class="vlbl">Urgency Level</div><div class="vval" id="vv4b">—</div><div class="vconf" id="vc4b"></div></div>
+        </div>
+        <div class="prog-row">
+          <div class="ps" id="p1b"><div class="pn">1</div>PIN Verify</div>
+          <div class="ps" id="p2b"><div class="pn">2</div>Volunteers</div>
+          <div class="ps" id="p3b"><div class="pn">3</div>Pincode</div>
+          <div class="ps" id="p4b"><div class="pn">4</div>Task Type</div>
+          <div class="ps" id="p5b"><div class="pn">5</div>Urgency</div>
+          <div class="ps" id="p6b"><div class="pn">6</div>Dispatch</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🔐 3-Layer Validation System</div>
+      <div style="padding:14px;overflow-x:auto">
+        <table class="dtbl">
+          <thead><tr><th>Layer</th><th>Check</th><th>Rule</th><th>Failure Action</th></tr></thead>
+          <tbody>
+            <tr><td><b>1</b></td><td>Range Check</td><td>Volunteers: 1–500 | Urgency: 1–5 | Valid India pincode</td><td>Re-ask the question</td></tr>
+            <tr><td><b>2</b></td><td>Anomaly Detection</td><td>Request &gt; 3× 4-week historical average</td><td>Hold + send confirmation SMS before posting</td></tr>
+            <tr><td><b>3</b></td><td>Confidence Threshold</td><td>Any field below 70% confidence score</td><td>Send to human admin review queue</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ IMPACT PAGE ══════════ -->
+<div class="page" id="page-impact">
+  <div class="impact-page">
+    <div class="card" style="margin-bottom:18px">
+      <div class="card-hd">📊 Impact Dashboard — Q1 2026</div>
+      <div class="impact-grid" style="padding:14px">
+        <div class="icard"><div class="iico">🏢</div><div class="inum">47</div><div class="ilbl">Active NGOs</div></div>
+        <div class="icard"><div class="iico">✅</div><div class="inum">1,840</div><div class="ilbl">Volunteers Dispatched</div></div>
+        <div class="icard"><div class="iico">⏱️</div><div class="inum">12,450</div><div class="ilbl">Hours Served</div></div>
+        <div class="icard"><div class="iico">🎯</div><div class="inum">94%</div><div class="ilbl">Match Rate</div></div>
+        <div class="icard"><div class="iico">📞</div><div class="inum">188</div><div class="ilbl">AI Calls Made</div></div>
+        <div class="icard"><div class="iico">🌍</div><div class="inum">5</div><div class="ilbl">Cities Covered</div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hd">🗺️ Project Roadmap</div>
+      <div style="overflow-x:auto;padding:0">
+        <table class="phase-tbl">
+          <thead><tr><th>Phase</th><th>Timeline</th><th>Target</th><th>Key Features</th></tr></thead>
+          <tbody>
+            <tr><td><b>Phase 1 — Pilot</b></td><td>Now</td><td>50 NGOs, Delhi NCR</td><td>Core AI call + Hindi + volunteer matching</td></tr>
+            <tr><td><b>Phase 2 — Scale</b></td><td>Months 3–6</td><td>500+ NGOs, 5 cities</td><td>8 regional languages, CSR partnerships</td></tr>
+            <tr><td><b>Disaster Mode</b></td><td>Months 4–8</td><td>Emergency dispatch</td><td>NDMA API integration, real-time alerts</td></tr>
+            <tr><td><b>Predictive AI</b></td><td>Months 6–12</td><td>Demand forecasting</td><td>Vertex AI trained on historical need data</td></tr>
+            <tr><td><b>CSR Integration</b></td><td>Year 2</td><td>Corporate tie-ups</td><td>Blockchain volunteer certificates</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TEAM PAGE ══════════ -->
+<div class="page" id="page-team">
+  <div class="team-page">
+    <div class="team-banner">
+      <h2>👥 Team <span>The Null Pointers</span></h2>
+      <p>Google Solution Challenge 2026 — Problem Statement #5: Smart Resource Allocation</p>
+      <div class="challenge">SevakAI — AI-Powered Volunteer Coordination for NGOs</div>
+    </div>
+
+    <div class="members-grid">
+      <div class="member-card">
+        <div class="member-avatar">👩‍💻</div>
+        <div class="member-info">
+          <div class="member-name">Radwa Fakhruddin</div>
+          <div class="member-role">Team Lead &amp; AI Engineer</div>
+          <div class="member-detail">Responsible for AI pipeline design, Gemini integration, speech processing, and system architecture.</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">👨‍💻</div>
+        <div class="member-info">
+          <div class="member-name">Pranay Maheshwari</div>
+          <div class="member-role">Backend Developer</div>
+          <div class="member-detail">Cloud Functions, Firebase database design, validation pipeline, and volunteer matching engine.</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">👩‍🎨</div>
+        <div class="member-info">
+          <div class="member-name">Khushi Mogha</div>
+          <div class="member-role">Frontend &amp; Design</div>
+          <div class="member-detail">Flutter app development, coordinator dashboard, volunteer portal UI and user experience design.</div>
+        </div>
+      </div>
+      <div class="member-card">
+        <div class="member-avatar">👨‍🔬</div>
+        <div class="member-info">
+          <div class="member-name">Mohit Yadav</div>
+          <div class="member-role">Research &amp; Testing</div>
+          <div class="member-detail">Problem research, NGO fieldwork analysis, solution validation, demo video and documentation.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="about-project">
+      <h3>Technology Stack</h3>
+      <div class="tech-grid">
+        <div class="tech-item"><div class="tname">🤖 Gemini 1.5 Flash</div><div class="trole">Conversation AI, JSON extraction, volunteer ranking</div></div>
+        <div class="tech-item"><div class="tname">🎙️ Cloud Speech-to-Text</div><div class="trole">Hindi + 7 regional language transcription</div></div>
+        <div class="tech-item"><div class="tname">🔥 Firebase Suite</div><div class="trole">Firestore, Realtime DB, Auth, FCM</div></div>
+        <div class="tech-item"><div class="tname">⚡ Cloud Functions</div><div class="trole">Serverless validation + matching backend</div></div>
+        <div class="tech-item"><div class="tname">🗺️ Google Maps</div><div class="trole">Pincode-level need map</div></div>
+        <div class="tech-item"><div class="tname">📱 Flutter</div><div class="trole">Android + Web cross-platform app</div></div>
+        <div class="tech-item"><div class="tname">📞 Exotel</div><div class="trole">Indian telephony for outbound AI calls</div></div>
+        <div class="tech-item"><div class="tname">💬 WhatsApp API</div><div class="trole">Volunteer notifications + fallback SMS</div></div>
+        <div class="tech-item"><div class="tname">🗓️ Cloud Scheduler</div><div class="trole">Weekly call batch trigger</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="foot-in">
+    <div><h4>About SevakAI</h4><p>AI-powered volunteer coordination portal for the Google Solution Challenge 2026. Enables NGO field coordinators to submit weekly volunteer needs via automated AI phone calls in Hindi and regional languages — no smartphone, app, or internet required.</p><p style="margin-top:6px;font-size:9px;color:#7a8fa6">Powered by Gemini 1.5 Flash · Google Cloud Speech-to-Text · Firebase · Flutter · Exotel</p></div>
+    <div><h4>Portal</h4><ul><li><a href="#">Dashboard</a></li><li><a href="#">Active Needs</a></li><li><a href="#">Volunteer Portal</a></li><li><a href="#">Needs Map</a></li><li><a href="#">Impact Report</a></li></ul></div>
+    <div><h4>Register</h4><ul><li><a href="#" onclick="openMod()">Register NGO</a></li><li><a href="#">Volunteer Sign Up</a></li><li><a href="#">Darpan ID Check</a></li><li><a href="#">OTP Verification</a></li></ul></div>
+    <div><h4>Help &amp; Policy</h4><ul><li><a href="#">User Manual</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="#">Grievance Portal</a></li><li><a href="#">Contact Support</a></li></ul></div>
+  </div>
+  <div class="foot-team">
+    Built with ❤️ by <b style="color:#fff">Team The Null Pointers</b> — Radwa Fakhruddin · Pranay Maheshwari · Khushi Mogha · Mohit Yadav &nbsp;|&nbsp; Google Solution Challenge 2026
+  </div>
+  <div class="foot-btm">
+    <span>© 2026 SevakAI · Google Solution Challenge Submission · Team The Null Pointers</span>
+    <span>Last Updated: 13 April 2026 &nbsp;|&nbsp; Visitors: 4,821</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeMod()">
+  <div class="mbox">
+    <div class="mhd">Register — SevakAI Portal <button onclick="closeMod()">×</button></div>
+    <div class="mbd">
+      <div id="mform">
+        <div class="fg"><label>Organisation Name <span class="req">*</span></label><input type="text" class="fi" placeholder="Full registered name"></div>
+        <div class="fg"><label>Darpan NGO ID <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. DL/2019/0234567"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fg"><label>Primary Phone <span class="req">*</span></label><input type="tel" class="fi" placeholder="+91"></div>
+          <div class="fg"><label>Backup Phone</label><input type="tel" class="fi" placeholder="+91"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div class="fg"><label>Language</label><select class="fsel"><option>Hindi</option><option>Bengali</option><option>Tamil</option><option>Telugu</option><option>Marathi</option><option>English</option></select></div>
+          <div class="fg"><label>Domain</label><select class="fsel"><option>Food Distribution</option><option>Healthcare</option><option>Education</option><option>Disaster Relief</option></select></div>
+        </div>
+        <div class="fg"><label>Service Area Pincode(s) <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. 110001, 110002"></div>
+        <button class="sbtn2" onclick="submitMod()">Submit Registration →</button>
+        <div class="fnote" style="margin-top:8px">By submitting you agree to SevakAI Terms of Use. Admin approval within 24 working hours.</div>
+      </div>
+      <div class="sucmsg" id="msuc"><div class="tick">✅</div><strong>Registration Submitted Successfully</strong><p>Admin will verify your Darpan ID and SMS you within 24 hours.</p><p style="margin-top:6px"><b>Ref No:</b> REG-2026-<span id="refno"></span></p></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── PAGE ROUTER ──
+const pages = {home:'Dashboard',needs:'Active Needs',sim:'AI Call Demo',volunteer:'Volunteer Portal',impact:'Impact Report',team:'Our Team'};
+function showPage(id, btn) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nbtn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  document.getElementById('bctext').textContent = pages[id]||id;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── COUNTERS ──
+function count(id,t){let v=0,step=t/50,el=document.getElementById(id);const i=setInterval(()=>{v=Math.min(v+step,t);el.textContent=Math.floor(v).toLocaleString('en-IN');if(v>=t)clearInterval(i);},28);}
+window.addEventListener('load',()=>{setTimeout(()=>{count('c1',47);count('c2',312);count('c3',1840);count('c4',12450);},400);});
+
+// ── MODAL ──
+function openMod(){document.getElementById('modal').classList.add('open');}
+function closeMod(){document.getElementById('modal').classList.remove('open');document.getElementById('mform').style.display='block';document.getElementById('msuc').style.display='none';}
+function submitMod(){document.getElementById('mform').style.display='none';document.getElementById('msuc').style.display='block';document.getElementById('refno').textContent=Math.floor(Math.random()*9000+1000);}
+function submitSide(){
+  const n=document.getElementById('fn').value,d=document.getElementById('fd').value,p=document.getElementById('fp').value;
+  if(!n||!d||!p){alert('Please fill all mandatory fields (*)');return;}
+  alert('✅ Registration submitted!\nRef No: REG-2026-'+Math.floor(Math.random()*9000+1000)+'\n\nAdmin will verify your Darpan ID within 24 hours.');
+  document.getElementById('fn').value=document.getElementById('fd').value=document.getElementById('fp').value='';
+}
+
+// ── VOLUNTEER ACTIONS ──
+function acceptTask(btn, name){
+  btn.textContent='✓ Accepted!'; btn.style.background='#0f6b06'; btn.disabled=true;
+  btn.closest('.tcard-footer').querySelector('.decline-btn').disabled=true;
+  alert('✅ Task Accepted!\n\nTask: '+name+'\n\nYou will receive a WhatsApp confirmation shortly with full task details and the NGO coordinator\'s contact.');
+}
+function declineTask(btn){
+  const card=btn.closest('.tcard');
+  card.style.opacity='0.4'; card.style.pointerEvents='none';
+  const info=document.createElement('div');
+  info.style.cssText='text-align:center;padding:10px;font-size:11px;color:var(--warn);font-weight:600';
+  info.textContent='Task passed — next volunteer being notified';
+  card.querySelector('.tcard-footer').replaceWith(info);
+}
+function filterTasks(btn, cat){
+  document.querySelectorAll('.fbtn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.querySelectorAll('.tcard').forEach(c=>{
+    c.style.display = (cat==='all'||c.dataset.cat===cat)?'':'none';
+  });
+}
+
+// ── SIMULATION ENGINE ──
+const script=[
+  {p:'p1',s:'ai', hi:'नमस्ते! मैं SevakAI हूँ। क्या आप Priya Sharma बोल रही हैं? कृपया अपना 4-अंकीय PIN बताएं।',en:"Hello! I'm SevakAI. Are you Priya Sharma? Please say your 4-digit PIN."},
+  {p:'p1',s:'ngo',hi:'हाँ, मैं Priya Sharma बोल रही हूँ। PIN — एक, दो, तीन, चार।',en:'Yes, I am Priya Sharma. PIN — 1, 2, 3, 4.'},
+  {p:'p2',s:'ai', hi:'PIN सत्यापित। इस सप्ताह आपको कितने volunteers चाहिए?',en:'PIN verified. How many volunteers do you need this week?'},
+  {p:'p2',s:'ngo',hi:'हमें बीस volunteers चाहिए।',en:'We need twenty volunteers.'},
+  {p:'p3',s:'ai', hi:'ठीक है — बीस volunteers। किस इलाके का pincode है?',en:'Understood — 20 volunteers. What is the area pincode?'},
+  {p:'p3',s:'ngo',hi:'दिल्ली — एक-एक-शून्य-शून्य-एक।',en:'Delhi — 1-1-0-0-0-1.'},
+  {p:'p4',s:'ai', hi:'110001, दिल्ली। काम का प्रकार — खाना, स्वास्थ्य, या शिक्षा?',en:'110001 Delhi. Type of work — food, health, or education?'},
+  {p:'p4',s:'ngo',hi:'खाना बाँटना — food distribution।',en:'Food distribution.'},
+  {p:'p5',s:'ai', hi:'1 से 5 में urgency कितनी है?',en:'On a scale of 1–5, what is the urgency?'},
+  {p:'p5',s:'ngo',hi:'तीन।',en:'Three.'},
+  {p:'p6',s:'ai', hi:'पुष्टि करें: 20 volunteers, 110001 दिल्ली, Food Distribution, Urgency 3 — सही है?',en:'Confirming: 20 volunteers, 110001 Delhi, Food Distribution, Urgency 3 — correct?'},
+  {p:'p6',s:'ngo',hi:'हाँ, सब सही है।',en:'Yes, everything is correct.'},
+  {p:'p6',s:'ai', hi:'धन्यवाद! जानकारी सत्यापित। Volunteers को अभी notify किया जा रहा है।',en:'Thank you! Data validated and saved. Volunteers are being notified now via WhatsApp.'},
+];
+
+function makeSim(dotId,btnId,boxId,vgId,pfx,busy_var){
+  let busy=false;
+  return function(){
+    if(busy)return; busy=true;
+    const btn=document.getElementById(btnId),box=document.getElementById(boxId),vg=document.getElementById(vgId);
+    btn.disabled=true; btn.textContent='⏳ Call in progress...';
+    document.getElementById(dotId).classList.add('on');
+    box.innerHTML=''; vg.style.display='none';
+    document.querySelectorAll('[id^="'+pfx+'"]').forEach(p=>{p.classList.remove('done','cur');p.querySelector('.pn').textContent=p.id.replace(pfx,'');});
+    let d=0;
+    script.forEach((l,i)=>{
+      setTimeout(()=>{
+        document.querySelectorAll('[id^="'+pfx+'"]').forEach(p=>p.classList.remove('cur'));
+        document.getElementById(pfx+l.p.slice(1)).classList.add('cur');
+        if(i>0&&script[i-1].p!==l.p){
+          const prev=document.getElementById(pfx+script[i-1].p.slice(1));
+          prev.classList.remove('cur');prev.classList.add('done');prev.querySelector('.pn').textContent='✓';
+        }
+        const div=document.createElement('div');div.className='tline';
+        div.innerHTML='<span class="tsp '+l.s+'">'+(l.s==='ai'?'SevakAI:':'NGO (Priya):')+'</span><span><span class="thi">'+l.hi+'</span><span class="ten">'+l.en+'</span></span>';
+        box.appendChild(div);box.scrollTop=box.scrollHeight;
+        if(i===script.length-1){
+          const last=document.getElementById(pfx+l.p.slice(1));last.classList.remove('cur');last.classList.add('done');last.querySelector('.pn').textContent='✓';
+          document.getElementById(dotId).classList.remove('on');
+          vg.style.display='grid';
+          const sfx=pfx==='p'?'':pfx.replace('p','b');
+          document.getElementById('vv1'+sfx).textContent='20';document.getElementById('vc1'+sfx).textContent='✓ Confidence: 97%';
+          document.getElementById('vv2'+sfx).textContent='110001';document.getElementById('vc2'+sfx).textContent='✓ Confidence: 99%';
+          document.getElementById('vv3'+sfx).textContent='Food Dist.';document.getElementById('vc3'+sfx).textContent='✓ Confidence: 95%';
+          document.getElementById('vv4'+sfx).textContent='3 / 5';document.getElementById('vc4'+sfx).textContent='✓ Confidence: 100%';
+          btn.disabled=false;btn.textContent='▶ Replay';busy=false;
+        }
+      },d);d+=1300;
+    });
+  };
+}
+const runSim=makeSim('cdot','simbtn','tbox','vgrid','p');
+function runSim2(){
+  let busy=false;
+  const btn=document.getElementById('simbtn2'),box=document.getElementById('tbox2'),vg=document.getElementById('vgrid2'),dot=document.getElementById('cdot2');
+  if(btn.dataset.busy==='1')return; btn.dataset.busy='1';
+  btn.disabled=true; btn.textContent='⏳ Call in progress...';
+  dot.classList.add('on'); box.innerHTML=''; vg.style.display='none';
+  document.querySelectorAll('[id^="p"][id$="b"]').forEach(p=>{p.classList.remove('done','cur');p.querySelector('.pn').textContent=p.id.replace('b','').replace('p','');});
+  let d=0;
+  script.forEach((l,i)=>{
+    setTimeout(()=>{
+      document.querySelectorAll('[id^="p"][id$="b"]').forEach(p=>p.classList.remove('cur'));
+      document.getElementById(l.p+'b').classList.add('cur');
+      if(i>0&&script[i-1].p!==l.p){
+        const prev=document.getElementById(script[i-1].p+'b');
+        prev.classList.remove('cur');prev.classList.add('done');prev.querySelector('.pn').textContent='✓';
+      }
+      const div=document.createElement('div');div.className='tline';
+      div.innerHTML='<span class="tsp '+l.s+'">'+(l.s==='ai'?'SevakAI:':'NGO (Priya):')+'</span><span><span class="thi">'+l.hi+'</span><span class="ten">'+l.en+'</span></span>';
+      box.appendChild(div);box.scrollTop=box.scrollHeight;
+      if(i===script.length-1){
+        const last=document.getElementById(l.p+'b');last.classList.remove('cur');last.classList.add('done');last.querySelector('.pn').textContent='✓';
+        dot.classList.remove('on'); vg.style.display='grid';
+        document.getElementById('vv1b').textContent='20';document.getElementById('vc1b').textContent='✓ Confidence: 97%';
+        document.getElementById('vv2b').textContent='110001';document.getElementById('vc2b').textContent='✓ Confidence: 99%';
+        document.getElementById('vv3b').textContent='Food Dist.';document.getElementById('vc3b').textContent='✓ Confidence: 95%';
+        document.getElementById('vv4b').textContent='3 / 5';document.getElementById('vc4b').textContent='✓ Confidence: 100%';
+        btn.disabled=false;btn.textContent='▶ Replay';btn.dataset.busy='';
+      }
+    },d);d+=1300;
+  });
+}
+</script>
+</body>
+</html>

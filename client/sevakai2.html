@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SevakAI - Volunteer Coordination Portal | Google Solution Challenge 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;500;600;700&family=Noto+Sans+Devanagari:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --navy: #1a3a6b; --saffron: #FF6600; --green-india: #138808;
+  --blue-link: #0056A2; --text: #212121; --text-mid: #444; --text-light: #666;
+  --border: #d0d0d0; --bg: #ffffff; --bg-light: #f5f7fa;
+  --table-head: #1a3a6b; --table-alt: #EEF3FB;
+  --success: #138808; --urgent: #c0392b; --warn: #e67e22;
+}
+body { font-family: 'Noto Sans', sans-serif; font-size: 14px; color: var(--text); background: #fff; }
+
+/* UTILITY BAR */
+.utility-bar { background: var(--navy); color: #fff; font-size: 12px; padding: 5px 0; border-bottom: 3px solid var(--saffron); }
+.utility-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; justify-content: space-between; align-items: center; }
+.utility-left { display: flex; gap: 16px; align-items: center; }
+.utility-left a { color: #ccd9ee; text-decoration: none; font-size: 11px; }
+.utility-left a:hover { color: #fff; text-decoration: underline; }
+.utility-right { display: flex; gap: 8px; align-items: center; }
+.utility-right a { color: #ccd9ee; text-decoration: none; font-size: 11px; padding: 2px 8px; border: 1px solid rgba(255,255,255,0.2); border-radius: 2px; }
+.utility-right a:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.lang-btn { background: var(--saffron); color: #fff; border: none; padding: 2px 10px; font-size: 11px; cursor: pointer; font-family: 'Noto Sans Devanagari', sans-serif; border-radius: 2px; }
+
+/* HEADER */
+.main-header { background: #fff; border-bottom: 1px solid var(--border); padding: 12px 0; }
+.header-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 16px; }
+.logo-circle { width: 60px; height: 60px; border-radius: 50%; background: var(--navy); display: flex; align-items: center; justify-content: center; font-size: 24px; flex-shrink: 0; }
+.header-text { flex: 1; }
+.header-text h1 { font-size: 20px; font-weight: 700; color: var(--navy); line-height: 1.2; margin-bottom: 2px; }
+.header-text h1 span { color: var(--saffron); }
+.header-text .hi { font-size: 12px; color: var(--text-light); font-family: 'Noto Sans Devanagari', sans-serif; }
+.header-text .sub { font-size: 11px; color: var(--text-light); margin-top: 1px; }
+.header-right { text-align: right; font-size: 11px; color: var(--text-light); border-left: 1px solid var(--border); padding-left: 16px; }
+.header-right .bold { font-size: 12px; font-weight: 600; color: var(--navy); margin-bottom: 3px; }
+.tricolor { height: 4px; background: linear-gradient(90deg, #FF6600 33.33%, #fff 33.33% 66.66%, #138808 66.66%); border-top: 1px solid var(--border); }
+
+/* NAV */
+.main-nav { background: var(--navy); position: sticky; top: 0; z-index: 100; }
+.nav-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; }
+.nav-btn { color: #d0ddf0; text-decoration: none; font-size: 13px; font-weight: 500; padding: 10px 16px; border: none; background: none; font-family: 'Noto Sans', sans-serif; cursor: pointer; border-right: 1px solid rgba(255,255,255,0.1); transition: background 0.15s, color 0.15s; }
+.nav-btn:hover { background: rgba(255,255,255,0.1); color: #fff; }
+.nav-btn.active { background: var(--saffron); color: #fff; }
+.nav-btn.right { margin-left: auto; border-left: 1px solid rgba(255,255,255,0.1); border-right: none; }
+
+/* BREADCRUMB */
+.breadcrumb { background: var(--bg-light); border-bottom: 1px solid var(--border); padding: 7px 0; font-size: 12px; }
+.bc-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 6px; color: var(--text-light); }
+.bc-inner a { color: var(--blue-link); text-decoration: none; }
+.bc-inner a:hover { text-decoration: underline; }
+
+/* ALERT */
+.alert-bar { background: #FFF8E1; border-top: 3px solid var(--saffron); border-bottom: 1px solid #FFE082; padding: 8px 0; font-size: 12px; }
+.alert-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px; display: flex; align-items: center; gap: 10px; }
+.alert-tag { background: var(--saffron); color: #fff; padding: 2px 8px; font-size: 11px; font-weight: 700; border-radius: 2px; flex-shrink: 0; }
+
+/* STATS */
+.stats-wrap { max-width: 1200px; margin: 16px auto 0; padding: 0 16px; }
+.stats-row { display: grid; grid-template-columns: repeat(4,1fr); border: 1px solid var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 20px; }
+.stat-box { padding: 14px 18px; border-right: 1px solid var(--border); background: #fff; display: flex; align-items: center; gap: 12px; }
+.stat-box:last-child { border-right: none; }
+.stat-ico { width: 38px; height: 38px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.ic1{background:#EEF3FB} .ic2{background:#FFF3E0} .ic3{background:#E8F5E9} .ic4{background:#F3E5F5}
+.stat-num { font-size: 22px; font-weight: 700; color: var(--navy); line-height: 1; }
+.stat-lbl { font-size: 11px; color: var(--text-light); margin-top: 2px; }
+
+/* LAYOUT */
+.page-body { max-width: 1200px; margin: 0 auto; padding: 0 16px 24px; display: grid; grid-template-columns: 1fr 300px; gap: 20px; }
+
+/* CARDS */
+.card { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 20px; overflow: hidden; }
+.card-head { background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; padding: 9px 14px; display: flex; justify-content: space-between; align-items: center; border-left: 4px solid var(--saffron); }
+.card-head a { color: #99b8e0; font-size: 11px; font-weight: 400; text-decoration: none; }
+.card-head a:hover { color: #fff; text-decoration: underline; }
+
+/* TABLE */
+.data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.data-table thead tr { background: var(--table-head); color: #fff; }
+.data-table th { padding: 8px 12px; text-align: left; font-weight: 600; font-size: 11px; letter-spacing: 0.03em; }
+.data-table td { padding: 9px 12px; border-bottom: 1px solid #e8e8e8; vertical-align: middle; }
+.data-table tr:nth-child(even) td { background: var(--table-alt); }
+.data-table tr:hover td { background: #dceefb; }
+.data-table tr:last-child td { border-bottom: none; }
+.up-pill { display: inline-block; padding: 2px 8px; border-radius: 2px; font-size: 11px; font-weight: 600; }
+.u-h { background: #FFEBEE; color: var(--urgent); border: 1px solid #ffcdd2; }
+.u-m { background: #FFF8E1; color: var(--warn); border: 1px solid #ffe082; }
+.u-l { background: #E8F5E9; color: var(--success); border: 1px solid #c8e6c9; }
+.tbar-wrap { display: flex; align-items: center; gap: 6px; }
+.tbar { width: 50px; height: 6px; background: #e0e0e0; border-radius: 2px; overflow: hidden; }
+.tfill { height: 100%; background: var(--success); border-radius: 2px; }
+.alink { color: var(--blue-link); text-decoration: none; font-size: 11px; }
+.alink:hover { text-decoration: underline; }
+
+/* CALL SIM */
+.sim-wrap { padding: 14px; background: var(--bg-light); border-bottom: 1px solid var(--border); }
+.sim-top { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.call-dot { width: 10px; height: 10px; border-radius: 50%; background: #bbb; flex-shrink: 0; transition: background 0.3s; }
+.call-dot.on { background: var(--success); animation: blink 1.2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.sim-org { font-weight: 600; font-size: 13px; color: var(--navy); }
+.sim-meta { font-size: 11px; color: var(--text-light); }
+.sim-btn { margin-left: auto; background: var(--navy); color: #fff; border: none; padding: 7px 16px; font-size: 12px; cursor: pointer; border-radius: 3px; font-family: 'Noto Sans', sans-serif; font-weight: 600; }
+.sim-btn:hover { background: #0f2a52; }
+.sim-btn:disabled { background: #999; cursor: not-allowed; }
+.transcript { background: #fff; border: 1px solid var(--border); border-radius: 3px; padding: 12px; min-height: 160px; max-height: 220px; overflow-y: auto; font-size: 12px; line-height: 1.7; }
+.t-line { display: flex; gap: 8px; margin-bottom: 8px; }
+.t-sp { font-weight: 700; font-size: 11px; white-space: nowrap; min-width: 90px; padding-top: 1px; }
+.t-sp.ai { color: var(--navy); }
+.t-sp.ngo { color: var(--green-india); }
+.t-hi { font-family: 'Noto Sans Devanagari', sans-serif; font-size: 12px; display: block; }
+.t-en { font-size: 11px; color: #888; font-style: italic; display: block; }
+.val-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-top: none; }
+.val-cell { background: #fff; padding: 10px 12px; font-size: 11px; }
+.val-lbl { color: var(--text-light); margin-bottom: 3px; }
+.val-val { font-weight: 700; color: var(--navy); font-size: 14px; }
+.val-c { font-size: 10px; color: var(--success); margin-top: 2px; }
+.prog-row { display: flex; align-items: center; padding: 12px 14px; background: #fff; border-top: 1px solid var(--border); }
+.prog-s { flex: 1; text-align: center; font-size: 11px; color: #aaa; position: relative; }
+.prog-s::after { content: ''; position: absolute; top: 13px; left: 55%; width: 90%; height: 2px; background: #e0e0e0; }
+.prog-s:last-child::after { display: none; }
+.prog-n { width: 26px; height: 26px; border-radius: 50%; background: #e0e0e0; color: #999; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; margin: 0 auto 4px; position: relative; z-index: 1; font-family: 'Noto Sans', sans-serif; }
+.prog-s.done .prog-n { background: var(--success); color: #fff; }
+.prog-s.done { color: var(--success); }
+.prog-s.done::after { background: var(--success); }
+.prog-s.cur .prog-n { background: var(--navy); color: #fff; }
+.prog-s.cur { color: var(--navy); font-weight: 600; }
+
+/* MAP */
+.map-area { position: relative; height: 280px; background: #dce8f0; overflow: hidden; }
+.map-svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.mpin { position: absolute; transform: translate(-50%,-100%); cursor: pointer; }
+.mpin-tri { width: 0; height: 0; border-left: 7px solid transparent; border-right: 7px solid transparent; border-top: 14px solid var(--navy); margin: 0 auto; position: relative; }
+.mpin-tri::before { content: ''; position: absolute; width: 10px; height: 10px; border-radius: 50%; top: -22px; left: -5px; background: var(--navy); }
+.mpin.hi .mpin-tri { border-top-color: var(--urgent); }
+.mpin.hi .mpin-tri::before { background: var(--urgent); }
+.mpin.mi .mpin-tri { border-top-color: var(--warn); }
+.mpin.mi .mpin-tri::before { background: var(--warn); }
+.mpin.lo .mpin-tri { border-top-color: var(--success); }
+.mpin.lo .mpin-tri::before { background: var(--success); }
+.mpin-tip { display: none; position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); background: #fff; border: 1px solid var(--border); padding: 6px 10px; border-radius: 3px; font-size: 11px; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.15); z-index: 10; pointer-events: none; }
+.mpin:hover .mpin-tip { display: block; }
+.mpin-tip strong { display: block; color: var(--navy); margin-bottom: 2px; font-size: 12px; }
+.mleg { position: absolute; bottom: 10px; right: 10px; background: rgba(255,255,255,0.95); border: 1px solid var(--border); padding: 8px 12px; font-size: 11px; border-radius: 3px; }
+.mleg-row { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+.mleg-row:last-child { margin-bottom: 0; }
+.mleg-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+/* SIDEBAR */
+.side-card { border: 1px solid var(--border); border-radius: 4px; margin-bottom: 16px; overflow: hidden; }
+.side-head { background: var(--navy); color: #fff; font-size: 12px; font-weight: 600; padding: 8px 12px; border-left: 3px solid var(--saffron); }
+.side-body { padding: 12px; background: #fff; }
+.fg { margin-bottom: 11px; }
+.fg label { display: block; font-size: 11px; font-weight: 600; color: var(--text-mid); margin-bottom: 4px; }
+.fg label .req { color: var(--urgent); }
+.fi { width: 100%; padding: 7px 9px; font-size: 12px; border: 1px solid var(--border); border-radius: 3px; font-family: 'Noto Sans', sans-serif; color: var(--text); outline: none; }
+.fi:focus { border-color: var(--navy); box-shadow: 0 0 0 2px rgba(26,58,107,0.1); }
+.fs { width: 100%; padding: 7px 9px; font-size: 12px; border: 1px solid var(--border); border-radius: 3px; font-family: 'Noto Sans', sans-serif; color: var(--text); background: #fff; outline: none; }
+.sbtn { width: 100%; background: var(--navy); color: #fff; border: none; padding: 9px; font-size: 13px; font-weight: 600; border-radius: 3px; cursor: pointer; font-family: 'Noto Sans', sans-serif; margin-top: 4px; }
+.sbtn:hover { background: #0f2a52; }
+.fnote { font-size: 10px; color: var(--text-light); margin-top: 8px; line-height: 1.5; }
+.qlinks { list-style: none; }
+.qlinks li { border-bottom: 1px solid #f0f0f0; padding: 7px 0; display: flex; gap: 6px; align-items: flex-start; }
+.qlinks li:last-child { border-bottom: none; padding-bottom: 0; }
+.qlinks li::before { content: '▸'; color: var(--saffron); font-size: 10px; padding-top: 2px; flex-shrink: 0; }
+.qlinks a { color: var(--blue-link); text-decoration: none; font-size: 12px; line-height: 1.4; }
+.qlinks a:hover { text-decoration: underline; }
+.notice { padding: 8px 0; border-bottom: 1px dashed #ddd; font-size: 11px; }
+.notice:last-child { border-bottom: none; padding-bottom: 0; }
+.n-date { color: var(--saffron); font-weight: 600; margin-bottom: 2px; }
+.n-text { color: var(--text-mid); line-height: 1.5; }
+.nbadge { background: var(--urgent); color: #fff; font-size: 9px; padding: 0px 5px; border-radius: 2px; font-weight: 700; margin-left: 4px; vertical-align: middle; }
+
+/* FOOTER */
+.footer { background: var(--navy); color: #c0cde0; border-top: 3px solid var(--saffron); margin-top: 20px; padding: 20px 0 0; }
+.foot-inner { max-width: 1200px; margin: 0 auto; padding: 0 16px 16px; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 24px; }
+.foot-inner h4 { color: #fff; font-size: 12px; margin-bottom: 8px; }
+.foot-inner p { font-size: 11px; line-height: 1.7; }
+.foot-inner ul { list-style: none; }
+.foot-inner ul li { margin-bottom: 5px; }
+.foot-inner ul li a { color: #a0b4cc; font-size: 11px; text-decoration: none; }
+.foot-inner ul li a:hover { color: #fff; text-decoration: underline; }
+.foot-bottom { background: #0f2345; padding: 10px 16px; font-size: 11px; color: #7a8fa6; display: flex; justify-content: space-between; border-top: 1px solid rgba(255,255,255,0.08); }
+
+/* MODAL */
+.modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 999; align-items: center; justify-content: center; }
+.modal-bg.open { display: flex; }
+.modal-box { background: #fff; max-width: 440px; width: 90%; border-top: 4px solid var(--saffron); border-radius: 4px; overflow: hidden; box-shadow: 0 8px 32px rgba(0,0,0,0.25); }
+.modal-hd { background: var(--navy); color: #fff; padding: 12px 16px; font-size: 14px; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+.modal-hd button { background: none; border: none; color: #fff; font-size: 18px; cursor: pointer; }
+.modal-bd { padding: 20px; }
+.success-msg { display: none; background: #E8F5E9; border: 1px solid #c8e6c9; padding: 20px; border-radius: 3px; text-align: center; }
+.success-msg .tick { font-size: 32px; margin-bottom: 8px; }
+.success-msg strong { font-size: 14px; color: var(--success); display: block; }
+.success-msg p { font-size: 12px; color: #555; margin-top: 6px; }
+
+@media(max-width:900px) {
+  .page-body { grid-template-columns: 1fr; }
+  .stats-row { grid-template-columns: 1fr 1fr; }
+  .foot-inner { grid-template-columns: 1fr 1fr; }
+  .val-grid { grid-template-columns: 1fr 1fr; }
+}
+@media(max-width:600px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .utility-right { display: none; }
+  .header-right { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- UTILITY BAR -->
+<div class="utility-bar">
+  <div class="utility-inner">
+    <div class="utility-left">
+      <span>🇮🇳 India Social Sector Initiative</span>
+      <a href="#">Skip to Main Content</a>
+      <a href="#">Screen Reader</a>
+    </div>
+    <div class="utility-right">
+      <button class="lang-btn">हिंदी</button>
+      <a href="#">A-</a><a href="#" style="font-weight:700">A</a><a href="#">A+</a>
+      <a href="#">High Contrast</a>
+    </div>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="main-header">
+  <div class="header-inner">
+    <div class="logo-circle">🤝</div>
+    <div class="header-text">
+      <h1>Sevak<span>AI</span> — Volunteer Coordination Portal</h1>
+      <div class="hi">सेवकAI — स्वयंसेवक समन्वय पोर्टल</div>
+      <div class="sub">AI-Powered NGO Volunteer Coordination | Ministry of Social Justice &amp; Empowerment | Government of India</div>
+    </div>
+    <div class="header-right">
+      <div class="bold">Google Solution Challenge 2026</div>
+      <div>Problem Statement #5 — Smart Resource Allocation</div>
+      <div style="margin-top:6px"><span style="background:var(--navy);color:#fff;padding:2px 8px;border-radius:2px;font-size:10px;font-weight:700">PROTOTYPE DEMO</span></div>
+    </div>
+  </div>
+  <div class="tricolor"></div>
+</header>
+
+<!-- NAV -->
+<nav class="main-nav">
+  <div class="nav-inner">
+    <button class="nav-btn active" onclick="setActive(this)">🏠 Home</button>
+    <button class="nav-btn" onclick="setActive(this)">📋 Active Needs</button>
+    <button class="nav-btn" onclick="setActive(this)">📞 AI Call Demo</button>
+    <button class="nav-btn" onclick="setActive(this)">🗺️ Needs Map</button>
+    <button class="nav-btn" onclick="setActive(this)">📊 Impact Report</button>
+    <button class="nav-btn" onclick="openModal()">✏️ Register NGO</button>
+    <button class="nav-btn right" onclick="setActive(this)">👤 Volunteer Login</button>
+  </div>
+</nav>
+
+<!-- BREADCRUMB -->
+<div class="breadcrumb">
+  <div class="bc-inner">
+    <a href="#">Home</a><span style="color:#aaa">›</span>
+    <a href="#">SevakAI Portal</a><span style="color:#aaa">›</span>
+    <span>Dashboard</span>
+  </div>
+</div>
+
+<!-- ALERT -->
+<div class="alert-bar">
+  <div class="alert-inner">
+    <span class="alert-tag">NOTICE</span>
+    <span style="color:#555;font-size:12px">
+      <b style="color:var(--saffron)">3 High-Urgency Needs</b> require immediate volunteer dispatch in Mumbai, Kolkata &amp; Delhi NCR. &nbsp;|&nbsp;
+      Weekly AI calls scheduled: <b>Monday 14 Apr 2026, 10:00–12:00 IST</b>. &nbsp;|&nbsp;
+      NGO registration window open — submit Darpan ID for verification.
+    </span>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-wrap">
+  <div class="stats-row" style="margin-top:16px">
+    <div class="stat-box"><div class="stat-ico ic1">🏢</div><div><div class="stat-num" id="s1">0</div><div class="stat-lbl">Active NGOs Registered</div></div></div>
+    <div class="stat-box"><div class="stat-ico ic2">📋</div><div><div class="stat-num" id="s2">0</div><div class="stat-lbl">Open Volunteer Needs</div></div></div>
+    <div class="stat-box"><div class="stat-ico ic3">✅</div><div><div class="stat-num" id="s3">0</div><div class="stat-lbl">Volunteers Dispatched</div></div></div>
+    <div class="stat-box"><div class="stat-ico ic4">⏱️</div><div><div class="stat-num" id="s4">0</div><div class="stat-lbl">Service Hours Logged</div></div></div>
+  </div>
+</div>
+
+<!-- PAGE BODY -->
+<div class="page-body">
+<main>
+
+  <!-- AI CALL DEMO -->
+  <div class="card">
+    <div class="card-head">📞 AI Weekly Call Simulation — Live Demo <a href="#">View all call logs →</a></div>
+    <div class="sim-wrap">
+      <div class="sim-top">
+        <div class="call-dot" id="cdot"></div>
+        <div>
+          <div class="sim-org">Aasha Foundation, Delhi NCR</div>
+          <div class="sim-meta">Darpan ID: DL/2019/0234567 &nbsp;|&nbsp; Language: Hindi &nbsp;|&nbsp; Domain: Food Distribution</div>
+        </div>
+        <button class="sim-btn" id="simbtn" onclick="runSim()">▶ Start Simulation</button>
+      </div>
+      <div class="transcript" id="tbox"><div style="color:#bbb;font-size:12px;text-align:center;padding:50px 0">Press "Start Simulation" to watch a live AI call transcript in Hindi</div></div>
+      <div class="val-grid" id="vgrid" style="display:none">
+        <div class="val-cell"><div class="val-lbl">Volunteers Requested</div><div class="val-val" id="vv1">—</div><div class="val-c" id="vc1"></div></div>
+        <div class="val-cell"><div class="val-lbl">Area / Pincode</div><div class="val-val" id="vv2">—</div><div class="val-c" id="vc2"></div></div>
+        <div class="val-cell"><div class="val-lbl">Task Type</div><div class="val-val" id="vv3">—</div><div class="val-c" id="vc3"></div></div>
+        <div class="val-cell"><div class="val-lbl">Urgency Level</div><div class="val-val" id="vv4">—</div><div class="val-c" id="vc4"></div></div>
+      </div>
+      <div class="prog-row">
+        <div class="prog-s" id="p1"><div class="prog-n">1</div>PIN Verify</div>
+        <div class="prog-s" id="p2"><div class="prog-n">2</div>Volunteers</div>
+        <div class="prog-s" id="p3"><div class="prog-n">3</div>Pincode</div>
+        <div class="prog-s" id="p4"><div class="prog-n">4</div>Task Type</div>
+        <div class="prog-s" id="p5"><div class="prog-n">5</div>Urgency</div>
+        <div class="prog-s" id="p6"><div class="prog-n">6</div>Dispatch</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- NEEDS TABLE -->
+  <div class="card">
+    <div class="card-head">📋 Active Volunteer Needs — This Week <a href="#">Download CSV ↓</a></div>
+    <table class="data-table">
+      <thead><tr>
+        <th>Ref No.</th><th>Organisation</th><th>City / Pincode</th>
+        <th>Task Type</th><th>Volunteers</th><th>Urgency</th>
+        <th>Trust Score</th><th>Status</th><th>Action</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td style="color:var(--text-light);font-size:11px">NE-2026-0412</td>
+          <td><b>Sneha Trust</b><br><span style="font-size:10px;color:#888">MH/2018/0119823</span></td>
+          <td>Mumbai<br><span style="font-size:10px">400001</span></td>
+          <td>Healthcare Camp</td>
+          <td style="font-weight:700;color:var(--navy)">75</td>
+          <td><span class="up-pill u-h">Urgency 5</span></td>
+          <td><div class="tbar-wrap"><div class="tbar"><div class="tfill" style="width:92%"></div></div><span style="font-size:11px;color:var(--text-light)">92</span></div></td>
+          <td><span style="color:var(--success);font-size:11px;font-weight:600">● Dispatching</span></td>
+          <td><a href="#" class="alink">View</a></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-light);font-size:11px">NE-2026-0411</td>
+          <td><b>Mamata NGO</b><br><span style="font-size:10px;color:#888">WB/2015/0087341</span></td>
+          <td>Kolkata<br><span style="font-size:10px">700001</span></td>
+          <td>Medical Aid</td>
+          <td style="font-weight:700;color:var(--navy)">50</td>
+          <td><span class="up-pill u-h">Urgency 4</span></td>
+          <td><div class="tbar-wrap"><div class="tbar"><div class="tfill" style="width:85%"></div></div><span style="font-size:11px;color:var(--text-light)">85</span></div></td>
+          <td><span style="color:var(--warn);font-size:11px;font-weight:600">● Matching</span></td>
+          <td><a href="#" class="alink">View</a></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-light);font-size:11px">NE-2026-0410</td>
+          <td><b>Udaan Society</b><br><span style="font-size:10px;color:#888">RJ/2017/0056218</span></td>
+          <td>Jaipur<br><span style="font-size:10px">302001</span></td>
+          <td>Education Drive</td>
+          <td style="font-weight:700;color:var(--navy)">25</td>
+          <td><span class="up-pill u-m">Urgency 3</span></td>
+          <td><div class="tbar-wrap"><div class="tbar"><div class="tfill" style="width:78%"></div></div><span style="font-size:11px;color:var(--text-light)">78</span></div></td>
+          <td><span style="color:var(--blue-link);font-size:11px;font-weight:600">● Open</span></td>
+          <td><a href="#" class="alink">View</a></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-light);font-size:11px">NE-2026-0409</td>
+          <td><b>Vidya Kiran</b><br><span style="font-size:10px;color:#888">TS/2016/0098423</span></td>
+          <td>Hyderabad<br><span style="font-size:10px">500001</span></td>
+          <td>Teaching Support</td>
+          <td style="font-weight:700;color:var(--navy)">30</td>
+          <td><span class="up-pill u-m">Urgency 3</span></td>
+          <td><div class="tbar-wrap"><div class="tbar"><div class="tfill" style="width:91%"></div></div><span style="font-size:11px;color:var(--text-light)">91</span></div></td>
+          <td><span style="color:var(--blue-link);font-size:11px;font-weight:600">● Open</span></td>
+          <td><a href="#" class="alink">View</a></td>
+        </tr>
+        <tr>
+          <td style="color:var(--text-light);font-size:11px">NE-2026-0408</td>
+          <td><b>Aasha Foundation</b><br><span style="font-size:10px;color:#888">DL/2019/0234567</span></td>
+          <td>Delhi<br><span style="font-size:10px">110001</span></td>
+          <td>Food Distribution</td>
+          <td style="font-weight:700;color:var(--navy)">20</td>
+          <td><span class="up-pill u-l">Urgency 2</span></td>
+          <td><div class="tbar-wrap"><div class="tbar"><div class="tfill" style="width:96%"></div></div><span style="font-size:11px;color:var(--text-light)">96</span></div></td>
+          <td><span style="color:var(--success);font-size:11px;font-weight:600">● Confirmed</span></td>
+          <td><a href="#" class="alink">View</a></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MAP -->
+  <div class="card">
+    <div class="card-head">🗺️ Geographic Distribution of Active Needs <a href="#">View full map →</a></div>
+    <div class="map-area">
+      <svg class="map-svg" viewBox="0 0 500 560" xmlns="http://www.w3.org/2000/svg">
+        <rect width="500" height="560" fill="#dce8f0"/>
+        <path fill="#c5d8e8" stroke="#a0b8cc" stroke-width="1.2"
+          d="M248,36 C228,39 202,53 183,73 C163,95 146,123 136,153 C125,184 121,215 126,245
+             C131,275 139,295 149,317 C161,341 169,359 177,385 C185,411 189,439 193,461
+             C197,481 203,498 213,513 C223,527 238,537 251,541
+             C264,537 279,527 289,513 C299,498 305,481 309,461
+             C313,439 317,411 325,385 C333,359 341,341 353,317
+             C363,295 371,275 376,245 C381,215 377,184 366,153
+             C356,123 339,95 319,73 C300,53 276,39 256,36 Z"/>
+        <line x1="251" y1="200" x2="310" y2="175" stroke="#b0c8d8" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <line x1="251" y1="200" x2="192" y2="175" stroke="#b0c8d8" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <line x1="251" y1="250" x2="200" y2="360" stroke="#b0c8d8" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <line x1="251" y1="250" x2="300" y2="370" stroke="#b0c8d8" stroke-width="0.8" stroke-dasharray="3,3"/>
+        <text x="251" y="170" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Delhi</text>
+        <text x="195" y="358" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Mumbai</text>
+        <text x="308" y="280" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Kolkata</text>
+        <text x="300" y="398" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Hyderabad</text>
+        <text x="244" y="446" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Bengaluru</text>
+        <text x="192" y="255" text-anchor="middle" font-size="9" fill="#556" font-family="sans-serif">Jaipur</text>
+      </svg>
+      <div class="mpin hi" style="left:50%;top:30%"><div class="mpin-tip"><strong>Sneha Trust — Mumbai</strong>75 volunteers · Healthcare · Urgency 5</div><div class="mpin-tri"></div></div>
+      <div class="mpin hi" style="left:62%;top:49%"><div class="mpin-tip"><strong>Mamata NGO — Kolkata</strong>50 volunteers · Medical · Urgency 4</div><div class="mpin-tri"></div></div>
+      <div class="mpin mi" style="left:38%;top:44%"><div class="mpin-tip"><strong>Udaan Society — Jaipur</strong>25 volunteers · Education · Urgency 3</div><div class="mpin-tri"></div></div>
+      <div class="mpin mi" style="left:60%;top:69%"><div class="mpin-tip"><strong>Vidya Kiran — Hyderabad</strong>30 volunteers · Teaching · Urgency 3</div><div class="mpin-tri"></div></div>
+      <div class="mpin lo" style="left:50%;top:27%"><div class="mpin-tip"><strong>Aasha Foundation — Delhi</strong>20 volunteers · Food · Urgency 2</div><div class="mpin-tri"></div></div>
+      <div class="mpin lo" style="left:49%;top:78%"><div class="mpin-tip"><strong>Green Hearts — Bengaluru</strong>15 volunteers · Food · Urgency 1</div><div class="mpin-tri"></div></div>
+      <div class="mleg">
+        <div class="mleg-row"><div class="mleg-dot" style="background:var(--urgent)"></div><span style="font-size:11px;color:#444">High Urgency (4–5)</span></div>
+        <div class="mleg-row"><div class="mleg-dot" style="background:var(--warn)"></div><span style="font-size:11px;color:#444">Medium (3)</span></div>
+        <div class="mleg-row"><div class="mleg-dot" style="background:var(--success)"></div><span style="font-size:11px;color:#444">Low (1–2)</span></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- SIDEBAR -->
+<aside>
+  <div class="side-card">
+    <div class="side-head">✏️ Quick NGO Registration</div>
+    <div class="side-body">
+      <div class="fg"><label>Organisation Name <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. Aasha Foundation" id="fn"></div>
+      <div class="fg"><label>Darpan NGO ID <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. DL/2019/0234567" id="fd"></div>
+      <div class="fg"><label>Coordinator Mobile <span class="req">*</span></label><input type="tel" class="fi" placeholder="+91 XXXXX XXXXX" id="fp"></div>
+      <div class="fg"><label>Preferred Language</label><select class="fs"><option>Hindi</option><option>Bengali</option><option>Tamil</option><option>Telugu</option><option>Marathi</option><option>English</option></select></div>
+      <div class="fg"><label>Primary Domain</label><select class="fs"><option>Food Distribution</option><option>Healthcare</option><option>Education</option><option>Disaster Relief</option></select></div>
+      <button class="sbtn" onclick="submitSide()">Submit for Admin Approval</button>
+      <div class="fnote">* Mandatory. Darpan ID verified against NITI Aayog NGO-DARPAN portal. Admin approval within 24 working hours. No fee.</div>
+    </div>
+  </div>
+
+  <div class="side-card">
+    <div class="side-head">🔗 Quick Links</div>
+    <div class="side-body">
+      <ul class="qlinks">
+        <li><a href="#">Volunteer Registration Form</a></li>
+        <li><a href="#">NGO Onboarding Guide (PDF)</a></li>
+        <li><a href="#">How SevakAI Calls Work</a></li>
+        <li><a href="#">Darpan ID Verification Status</a></li>
+        <li><a href="#">Trust Score Policy &amp; Guidelines</a></li>
+        <li><a href="#">Grievance Redressal Portal</a></li>
+        <li><a href="#">Impact Report Q1 2026</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="side-card">
+    <div class="side-head">📢 Notice Board</div>
+    <div class="side-body">
+      <div class="notice"><div class="n-date">14 Apr 2026 <span class="nbadge">NEW</span></div><div class="n-text">Weekly AI call batch scheduled. 47 NGOs will be contacted between 10:00–12:00 IST.</div></div>
+      <div class="notice"><div class="n-date">10 Apr 2026</div><div class="n-text">Telugu language support added. NGOs in Andhra Pradesh &amp; Telangana may update preferences.</div></div>
+      <div class="notice"><div class="n-date">07 Apr 2026</div><div class="n-text">Trust score recalibration completed for Q1 2026. 3 NGOs suspended pending review.</div></div>
+      <div class="notice"><div class="n-date">01 Apr 2026</div><div class="n-text">SevakAI Pilot Phase 1 complete. 1,840 volunteer dispatches logged successfully.</div></div>
+    </div>
+  </div>
+</aside>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="foot-inner">
+    <div>
+      <h4>About SevakAI</h4>
+      <p>SevakAI is an AI-powered volunteer coordination portal for the Google Solution Challenge 2026. It enables NGO field coordinators to submit weekly volunteer needs via automated AI phone calls in Hindi and regional languages — no smartphone, app, or internet required.</p>
+      <p style="margin-top:8px;font-size:10px;color:#7a8fa6">Powered by Gemini 1.5 Flash · Google Cloud Speech-to-Text · Firebase · Flutter · Exotel</p>
+    </div>
+    <div><h4>Portal</h4><ul><li><a href="#">Dashboard</a></li><li><a href="#">Active Needs</a></li><li><a href="#">Needs Map</a></li><li><a href="#">Impact Report</a></li><li><a href="#">Admin Panel</a></li></ul></div>
+    <div><h4>Register</h4><ul><li><a href="#" onclick="openModal()">Register NGO</a></li><li><a href="#">Volunteer Sign Up</a></li><li><a href="#">Darpan ID Check</a></li><li><a href="#">OTP Verification</a></li></ul></div>
+    <div><h4>Help &amp; Policy</h4><ul><li><a href="#">User Manual</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li><li><a href="#">Grievance Portal</a></li><li><a href="#">Contact Support</a></li></ul></div>
+  </div>
+  <div class="foot-bottom">
+    <span>© 2026 SevakAI · Google Solution Challenge Submission · Content maintained by Team SevakAI</span>
+    <span>Last Updated: 13 April 2026 &nbsp;|&nbsp; Visitors: 4,821</span>
+  </div>
+</footer>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-hd">Register Your NGO — SevakAI Portal <button onclick="closeModal()">×</button></div>
+    <div class="modal-bd">
+      <div id="mform">
+        <div class="fg"><label>Organisation Name <span class="req">*</span></label><input type="text" class="fi" placeholder="Full registered name"></div>
+        <div class="fg"><label>Darpan NGO ID <span class="req">*</span></label><input type="text" class="fi" placeholder="State/Year/ID e.g. DL/2019/0234567"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="fg"><label>Primary Phone <span class="req">*</span></label><input type="tel" class="fi" placeholder="+91"></div>
+          <div class="fg"><label>Backup Phone</label><input type="tel" class="fi" placeholder="+91"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="fg"><label>Language</label><select class="fs"><option>Hindi</option><option>Bengali</option><option>Tamil</option><option>Telugu</option><option>Marathi</option><option>English</option></select></div>
+          <div class="fg"><label>Domain</label><select class="fs"><option>Food Distribution</option><option>Healthcare</option><option>Education</option><option>Disaster Relief</option></select></div>
+        </div>
+        <div class="fg"><label>Service Area Pincode(s) <span class="req">*</span></label><input type="text" class="fi" placeholder="e.g. 110001, 110002"></div>
+        <button class="sbtn" onclick="submitModal()">Submit Registration →</button>
+        <div class="fnote" style="margin-top:10px">By submitting you confirm all information is accurate and agree to SevakAI Terms of Use. Admin approval within 24 working hours.</div>
+      </div>
+      <div class="success-msg" id="msuccess">
+        <div class="tick">✅</div>
+        <strong>Registration Submitted Successfully</strong>
+        <p>Admin will verify your Darpan ID and send SMS confirmation within 24 working hours.</p>
+        <p style="margin-top:8px"><b>Reference No:</b> REG-2026-<span id="refno"></span></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Counters
+function count(id, t) {
+  let v = 0, step = t/50, el = document.getElementById(id);
+  const i = setInterval(() => { v = Math.min(v+step,t); el.textContent = Math.floor(v).toLocaleString('en-IN'); if(v>=t) clearInterval(i); }, 28);
+}
+window.addEventListener('load', () => { setTimeout(() => { count('s1',47); count('s2',312); count('s3',1840); count('s4',12450); }, 400); });
+
+function setActive(el) { document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active')); el.classList.add('active'); }
+function openModal() { document.getElementById('modal').classList.add('open'); }
+function closeModal() { document.getElementById('modal').classList.remove('open'); document.getElementById('mform').style.display='block'; document.getElementById('msuccess').style.display='none'; }
+function submitModal() { document.getElementById('mform').style.display='none'; document.getElementById('msuccess').style.display='block'; document.getElementById('refno').textContent=Math.floor(Math.random()*9000+1000); }
+function submitSide() {
+  const n=document.getElementById('fn').value, d=document.getElementById('fd').value, p=document.getElementById('fp').value;
+  if(!n||!d||!p){alert('Please fill all mandatory fields (*)');return;}
+  alert('✅ Registration submitted!\nRef No: REG-2026-'+Math.floor(Math.random()*9000+1000)+'\n\nAdmin will verify your Darpan ID within 24 hours.');
+  document.getElementById('fn').value=document.getElementById('fd').value=document.getElementById('fp').value='';
+}
+
+// Simulation
+const lines = [
+  {p:'p1',s:'ai', hi:'नमस्ते! मैं SevakAI हूँ। क्या आप Priya Sharma बोल रही हैं? कृपया अपना 4-अंकीय PIN बताएं।', en:"Hello! I'm SevakAI. Are you Priya Sharma? Please say your 4-digit PIN."},
+  {p:'p1',s:'ngo',hi:'हाँ, मैं Priya Sharma बोल रही हूँ। PIN — एक, दो, तीन, चार।',                              en:'Yes, this is Priya Sharma. PIN — 1, 2, 3, 4.'},
+  {p:'p2',s:'ai', hi:'PIN सत्यापित। इस सप्ताह आपको कितने volunteers चाहिए?',                                   en:'PIN verified. How many volunteers do you need this week?'},
+  {p:'p2',s:'ngo',hi:'हमें बीस volunteers चाहिए।',                                                              en:'We need twenty volunteers.'},
+  {p:'p3',s:'ai', hi:'ठीक है — बीस volunteers। किस इलाके का pincode है?',                                      en:'Understood — 20 volunteers. What is the area pincode?'},
+  {p:'p3',s:'ngo',hi:'दिल्ली — एक-एक-शून्य-शून्य-एक।',                                                        en:'Delhi — 1-1-0-0-0-1.'},
+  {p:'p4',s:'ai', hi:'110001, दिल्ली। काम का प्रकार बताएं — खाना, स्वास्थ्य, या शिक्षा?',                    en:'110001 Delhi. What type of work — food, health, or education?'},
+  {p:'p4',s:'ngo',hi:'खाना बाँटना — food distribution।',                                                        en:'Food distribution.'},
+  {p:'p5',s:'ai', hi:'1 से 5 में urgency कितनी है?',                                                            en:'On a scale of 1–5, what is the urgency?'},
+  {p:'p5',s:'ngo',hi:'तीन।',                                                                                     en:'Three.'},
+  {p:'p6',s:'ai', hi:'पुष्टि: 20 volunteers, 110001 दिल्ली, Food Distribution, Urgency 3 — सही है?',           en:'Confirming: 20 volunteers, 110001 Delhi, Food Distribution, Urgency 3 — correct?'},
+  {p:'p6',s:'ngo',hi:'हाँ, सब सही है।',                                                                         en:'Yes, everything is correct.'},
+  {p:'p6',s:'ai', hi:'धन्यवाद! जानकारी सत्यापित। Volunteers को अभी notify किया जा रहा है।',                   en:'Thank you! Data validated. Volunteers are being notified now.'},
+];
+
+let busy=false;
+function runSim(){
+  if(busy)return; busy=true;
+  const btn=document.getElementById('simbtn'); btn.disabled=true; btn.textContent='⏳ Call in progress...';
+  document.getElementById('cdot').classList.add('on');
+  document.getElementById('tbox').innerHTML='';
+  document.getElementById('vgrid').style.display='none';
+  document.querySelectorAll('.prog-s').forEach(p=>{p.classList.remove('done','cur');p.querySelector('.prog-n').textContent=p.id.replace('p','');});
+
+  let d=0;
+  lines.forEach((l,i)=>{
+    setTimeout(()=>{
+      // progress
+      document.querySelectorAll('.prog-s').forEach(p=>p.classList.remove('cur'));
+      document.getElementById(l.p).classList.add('cur');
+      if(i>0&&lines[i-1].p!==l.p){
+        const prev=document.getElementById(lines[i-1].p);
+        prev.classList.remove('cur'); prev.classList.add('done'); prev.querySelector('.prog-n').textContent='✓';
+      }
+      // line
+      const div=document.createElement('div'); div.className='t-line';
+      div.innerHTML=`<span class="t-sp ${l.s}">${l.s==='ai'?'SevakAI:':'NGO (Priya):'}</span>
+        <span><span class="t-hi">${l.hi}</span><span class="t-en">${l.en}</span></span>`;
+      const box=document.getElementById('tbox'); box.appendChild(div); box.scrollTop=box.scrollHeight;
+      // final
+      if(i===lines.length-1){
+        const last=document.getElementById(l.p); last.classList.remove('cur'); last.classList.add('done'); last.querySelector('.prog-n').textContent='✓';
+        document.getElementById('cdot').classList.remove('on');
+        const vg=document.getElementById('vgrid'); vg.style.display='grid';
+        document.getElementById('vv1').textContent='20'; document.getElementById('vc1').textContent='✓ Confidence: 97%';
+        document.getElementById('vv2').textContent='110001'; document.getElementById('vc2').textContent='✓ Confidence: 99%';
+        document.getElementById('vv3').textContent='Food Dist.'; document.getElementById('vc3').textContent='✓ Confidence: 95%';
+        document.getElementById('vv4').textContent='3 / 5'; document.getElementById('vc4').textContent='✓ Confidence: 100%';
+        btn.disabled=false; btn.textContent='▶ Replay Simulation'; busy=false;
+      }
+    },d); d+=1300;
+  });
+}
+</script>
+</body>
+</html>
