@@ -2,15 +2,15 @@ import CallSimulator from '../components/simulation/CallSimulator';
 
 export default function AICallDemo() {
   return (
-    <div style={{maxWidth:1200,margin:'0 auto',padding:'14px 16px'}}>
+    <div style={{ maxWidth: 1200, margin: '0 auto', padding: '14px 16px' }}>
       <div className="card">
         <div className="card-hd">📞 AI Weekly Call Simulation — Full Demo</div>
         <CallSimulator large />
       </div>
-      
+
       <div className="card">
         <div className="card-hd">🔐 3-Layer Validation System</div>
-        <div style={{padding:'14px',overflowX:'auto'}}>
+        <div style={{ padding: '14px', overflowX: 'auto' }}>
           <table className="dtbl">
             <thead>
               <tr>
@@ -23,7 +23,7 @@ export default function AICallDemo() {
             <tbody>
               <tr>
                 <td><b>1</b></td>
-                <td>Range Check</td>
+                <td>Range Check </td>
                 <td>Volunteers: 1–500 | Urgency: 1–5 | Valid India pincode</td>
                 <td>Re-ask the question</td>
               </tr>

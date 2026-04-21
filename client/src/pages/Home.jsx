@@ -42,7 +42,7 @@ export default function Home({ onRegisterClick }) {
   return (
     <>
       <div className="stats-wrap">
-        <div className="stats-row" style={{marginTop:14}}>
+        <div className="stats-row" style={{ marginTop: 14 }}>
           <div className="sbox"><div className="sico i1">🏢</div><div><div className="snum" ref={c1}>0</div><div className="slbl">Active NGOs Registered</div></div></div>
           <div className="sbox"><div className="sico i2">📋</div><div><div className="snum" ref={c2}>0</div><div className="slbl">Open Volunteer Needs</div></div></div>
           <div className="sbox"><div className="sico i3">✅</div><div><div className="snum" ref={c3}>0</div><div className="slbl">Volunteers Dispatched</div></div></div>
@@ -61,63 +61,63 @@ export default function Home({ onRegisterClick }) {
           {/* NEEDS TABLE */}
           <div className="card">
             <div className="card-hd">📋 Active Volunteer Needs — This Week <a href="#">Download CSV ↓</a></div>
-            <div style={{overflowX:'auto'}}>
+            <div style={{ overflowX: 'auto' }}>
               <table className="dtbl">
                 <thead><tr><th>Ref No.</th><th>Organisation</th><th>City</th><th>Task</th><th>Vol.</th><th>Urgency</th><th>Trust</th><th>Status</th><th>Action</th></tr></thead>
                 <tbody>
                   <tr>
-                    <td style={{fontSize:10,color:'var(--light)'}}>NE-2026-0412</td>
-                    <td><b>Sneha Trust</b><br/><span style={{fontSize:9,color:'#888'}}>MH/2018/0119823</span></td>
-                    <td>Mumbai<br/><span style={{fontSize:9}}>400001</span></td>
+                    <td style={{ fontSize: 10, color: 'var(--light)' }}>NE-2026-0412</td>
+                    <td><b>Sneha Trust</b><br /><span style={{ fontSize: 9, color: '#888' }}>MH/2018/0119823</span></td>
+                    <td>Mumbai<br /><span style={{ fontSize: 9 }}>400001</span></td>
                     <td>Healthcare Camp</td>
-                    <td style={{fontWeight:700,color:'var(--navy)'}}>75</td>
+                    <td style={{ fontWeight: 700, color: 'var(--navy)' }}>75</td>
                     <td><span className="pill ph">Urgency 5</span></td>
-                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{width:'92%'}}></div></div><span style={{fontSize:10,color:'var(--light)'}}>92</span></div></td>
-                    <td><span style={{color:'var(--ok)',fontSize:10,fontWeight:600}}>● Dispatching</span></td>
+                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{ width: '92%' }}></div></div><span style={{ fontSize: 10, color: 'var(--light)' }}>92</span></div></td>
+                    <td><span style={{ color: 'var(--ok)', fontSize: 10, fontWeight: 600 }}>● Dispatching</span></td>
                     <td><a href="#" className="alink">View</a></td>
                   </tr>
                   <tr>
-                    <td style={{fontSize:10,color:'var(--light)'}}>NE-2026-0411</td>
-                    <td><b>Mamata NGO</b><br/><span style={{fontSize:9,color:'#888'}}>WB/2015/0087341</span></td>
-                    <td>Kolkata<br/><span style={{fontSize:9}}>700001</span></td>
+                    <td style={{ fontSize: 10, color: 'var(--light)' }}>NE-2026-0411</td>
+                    <td><b>Mamata NGO</b><br /><span style={{ fontSize: 9, color: '#888' }}>WB/2015/0087341</span></td>
+                    <td>Kolkata<br /><span style={{ fontSize: 9 }}>700001</span></td>
                     <td>Medical Aid</td>
-                    <td style={{fontWeight:700,color:'var(--navy)'}}>50</td>
+                    <td style={{ fontWeight: 700, color: 'var(--navy)' }}>50</td>
                     <td><span className="pill ph">Urgency 4</span></td>
-                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{width:'85%'}}></div></div><span style={{fontSize:10,color:'var(--light)'}}>85</span></div></td>
-                    <td><span style={{color:'var(--warn)',fontSize:10,fontWeight:600}}>● Matching</span></td>
+                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{ width: '85%' }}></div></div><span style={{ fontSize: 10, color: 'var(--light)' }}>85</span></div></td>
+                    <td><span style={{ color: 'var(--warn)', fontSize: 10, fontWeight: 600 }}>● Matching</span></td>
                     <td><a href="#" className="alink">View</a></td>
                   </tr>
                   <tr>
-                    <td style={{fontSize:10,color:'var(--light)'}}>NE-2026-0410</td>
-                    <td><b>Udaan Society</b><br/><span style={{fontSize:9,color:'#888'}}>RJ/2017/0056218</span></td>
-                    <td>Jaipur<br/><span style={{fontSize:9}}>302001</span></td>
+                    <td style={{ fontSize: 10, color: 'var(--light)' }}>NE-2026-0410</td>
+                    <td><b>Udaan Society</b><br /><span style={{ fontSize: 9, color: '#888' }}>RJ/2017/0056218</span></td>
+                    <td>Jaipur<br /><span style={{ fontSize: 9 }}>302001</span></td>
                     <td>Education Drive</td>
-                    <td style={{fontWeight:700,color:'var(--navy)'}}>25</td>
+                    <td style={{ fontWeight: 700, color: 'var(--navy)' }}>25</td>
                     <td><span className="pill pm">Urgency 3</span></td>
-                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{width:'78%'}}></div></div><span style={{fontSize:10,color:'var(--light)'}}>78</span></div></td>
-                    <td><span style={{color:'var(--blue)',fontSize:10,fontWeight:600}}>● Open</span></td>
+                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{ width: '78%' }}></div></div><span style={{ fontSize: 10, color: 'var(--light)' }}>78</span></div></td>
+                    <td><span style={{ color: 'var(--blue)', fontSize: 10, fontWeight: 600 }}>● Open</span></td>
                     <td><a href="#" className="alink">View</a></td>
                   </tr>
                   <tr>
-                    <td style={{fontSize:10,color:'var(--light)'}}>NE-2026-0409</td>
-                    <td><b>Vidya Kiran</b><br/><span style={{fontSize:9,color:'#888'}}>TS/2016/0098423</span></td>
-                    <td>Hyderabad<br/><span style={{fontSize:9}}>500001</span></td>
+                    <td style={{ fontSize: 10, color: 'var(--light)' }}>NE-2026-0409</td>
+                    <td><b>Vidya Kiran</b><br /><span style={{ fontSize: 9, color: '#888' }}>TS/2016/0098423</span></td>
+                    <td>Hyderabad<br /><span style={{ fontSize: 9 }}>500001</span></td>
                     <td>Teaching Support</td>
-                    <td style={{fontWeight:700,color:'var(--navy)'}}>30</td>
+                    <td style={{ fontWeight: 700, color: 'var(--navy)' }}>30</td>
                     <td><span className="pill pm">Urgency 3</span></td>
-                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{width:'91%'}}></div></div><span style={{fontSize:10,color:'var(--light)'}}>91</span></div></td>
-                    <td><span style={{color:'var(--blue)',fontSize:10,fontWeight:600}}>● Open</span></td>
+                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{ width: '91%' }}></div></div><span style={{ fontSize: 10, color: 'var(--light)' }}>91</span></div></td>
+                    <td><span style={{ color: 'var(--blue)', fontSize: 10, fontWeight: 600 }}>● Open</span></td>
                     <td><a href="#" className="alink">View</a></td>
                   </tr>
                   <tr>
-                    <td style={{fontSize:10,color:'var(--light)'}}>NE-2026-0408</td>
-                    <td><b>Aasha Foundation</b><br/><span style={{fontSize:9,color:'#888'}}>DL/2019/0234567</span></td>
-                    <td>Delhi<br/><span style={{fontSize:9}}>110001</span></td>
+                    <td style={{ fontSize: 10, color: 'var(--light)' }}>NE-2026-0408</td>
+                    <td><b>Aasha Foundation</b><br /><span style={{ fontSize: 9, color: '#888' }}>DL/2019/0234567</span></td>
+                    <td>Delhi<br /><span style={{ fontSize: 9 }}>110001</span></td>
                     <td>Food Distribution</td>
-                    <td style={{fontWeight:700,color:'var(--navy)'}}>20</td>
+                    <td style={{ fontWeight: 700, color: 'var(--navy)' }}>20</td>
                     <td><span className="pill pl">Urgency 2</span></td>
-                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{width:'96%'}}></div></div><span style={{fontSize:10,color:'var(--light)'}}>96</span></div></td>
-                    <td><span style={{color:'var(--ok)',fontSize:10,fontWeight:600}}>● Confirmed</span></td>
+                    <td><div className="tbar-w"><div className="tbar"><div className="tfill" style={{ width: '96%' }}></div></div><span style={{ fontSize: 10, color: 'var(--light)' }}>96</span></div></td>
+                    <td><span style={{ color: 'var(--ok)', fontSize: 10, fontWeight: 600 }}>● Confirmed</span></td>
                     <td><a href="#" className="alink">View</a></td>
                   </tr>
                 </tbody>
