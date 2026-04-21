@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
-import CallSimulator from '../components/simulation/CallSimulator';
-import NeedsMap from '../components/map/NeedsMap';
+import CallSimulator from '../components/simulation/CallSimulator.jsx';
+import NeedsMap from '../components/map/NeedsMap.jsx';
 
 function animateCount(el, target) {
   let v = 0;

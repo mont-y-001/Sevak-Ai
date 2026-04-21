@@ -1,17 +1,17 @@
 import { useState } from 'react';
-import UtilityBar from './components/layout/UtilityBar';
-import Header from './components/layout/Header';
-import Navbar from './components/layout/Navbar';
-import Breadcrumb from './components/layout/Breadcrumb';
-import NoticeBar from './components/layout/NoticeBar';
-import Footer from './components/layout/Footer';
-import Modal from './components/ui/Modal';
-import Home from './pages/Home';
-import ActiveNeeds from './pages/ActiveNeeds';
-import AICallDemo from './pages/AICallDemo';
-import VolunteerPortal from './pages/VolunteerPortal';
-import ImpactReport from './pages/ImpactReports';
-import TeamPage from './pages/TeamPage';
+import UtilityBar from './components/layout/UtilityBar.jsx';
+import Header from './components/layout/Header.jsx';
+import Navbar from './components/layout/Navbar.jsx';
+import Breadcrumb from './components/layout/Breadcrumb.jsx';
+import NoticeBar from './components/layout/NoticeBar.jsx';
+import Footer from './components/layout/Footer.jsx';
+import Modal from './components/ui/Modal.jsx';
+import Home from './pages/Home.jsx';
+import ActiveNeeds from './pages/ActiveNeeds.jsx';
+import AICallDemo from './pages/AICallDemo.jsx';
+import VolunteerPortal from './pages/VolunteerPortal.jsx';
+import ImpactReport from './pages/ImpactReports.jsx';
+import TeamPage from './pages/TeamPage.jsx';
 
 const PAGES = { home: Home, needs: ActiveNeeds, sim: AICallDemo, volunteer: VolunteerPortal, impact: ImpactReport, team: TeamPage };
 

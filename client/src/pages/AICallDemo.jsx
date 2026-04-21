@@ -1,4 +1,4 @@
-import CallSimulator from '../components/simulation/CallSimulator';
+import CallSimulator from '../components/simulation/CallSimulator.jsx';
 
 export default function AICallDemo() {
   return (
